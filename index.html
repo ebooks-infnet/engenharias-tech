@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-book Interativo Engenharias Tech</title>
+    <!-- Tailwind CSS CDN para renderização ágil e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuração de temas e cores estendidas do Tailwind para combinar com a identidade visual Infnet
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        infnetBlue: '#013056',
+                        infnetLightBlue: '#689ccb',
+                        infnetMediumBlue: '#23599c',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos e transições customizados para otimizar a experiência de leitura */
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+        }
+        /* Ajuste do scrollbar para ficar elegante em todos os navegadores */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.5);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="h-screen max-h-screen overflow-hidden font-sans antialiased">
+
+    <!-- ROOT CONTAINER DO APLICATIVO (Layout em coluna inteira) -->
+    <div id="app-root" class="h-screen max-h-screen overflow-hidden flex flex-col transition-colors duration-200">
+        
+        <!-- BARRA DE NAVEGAÇÃO SUPERIOR -->
+        <header id="top-navigation" class="w-full border-b px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3 flex-shrink-0 z-50">
+            <!-- Lado Esquerdo: Botão Capa (No lugar do logotipo) e Breadcrumb de Progresso -->
+            <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
+                <div class="flex items-center space-x-3">
+                    <!-- Botão de Voltar para a Capa (Home) reinstalado com o ícone correspondente -->
+                    <button onclick="setChapter(-1); closePanels();" class="px-3 py-1.5 rounded-lg border border-current text-xs font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center space-x-1.5" title="Ir para a capa">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        <span>Capa</span>
+                    </button>
+                </div>
+
+                <!-- Breadcrumb dinâmico para artigos -->
+                <div id="header-breadcrumb" class="text-xs font-bold opacity-75 truncate max-w-[150px] md:max-w-none">
+                   
+                </div>
+            </div>
+
+            <!-- Lado Direito: Abas Superiores Interativas de Pesquisa, Marcadores, Fonte e Temas -->
+            <div class="flex items-center justify-between md:justify-end space-x-2 w-full md:w-auto border-t md:border-t-0 pt-2 md:pt-0">
+                
+                <!-- Abas Superiores Ativas -->
+                <div class="flex items-center space-x-1">
+                    <button id="tab-btn-search" onclick="toggleTabPanel('search')" class="px-3 py-1.5 rounded-lg border border-current text-xs font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center space-x-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <span>Pesquisa</span>
+                    </button>
+                    
+                    <button id="tab-btn-bookmarks" onclick="toggleTabPanel('bookmarks')" class="px-3 py-1.5 rounded-lg border border-current text-xs font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center space-x-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                        </svg>
+                        <span>Marcadores (<span id="bookmarks-count">0</span>)</span>
+                    </button>
+                </div>
+
+                <!-- Divisor Visual -->
+                <div class="h-6 w-px bg-current opacity-20 hidden md:block"></div>
+
+                <!-- Controles Globais de Leitura -->
+                <div class="flex items-center space-x-1">
+                    <!-- Ajuste da Fonte -->
+                    <button onclick="toggleFontSize()" class="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-xs font-bold flex items-center space-x-0.5" title="Tamanho da Fonte">
+                        <span>A</span><span class="text-[9px]">±</span>
+                    </button>
+
+                    <!-- Alternador de Temas de Cores (Dia e Noite) -->
+                    <div class="flex items-center space-x-1 bg-black/5 dark:bg-white/5 p-1 rounded-lg">
+                        <button onclick="setTheme('light')" id="theme-btn-light" class="px-2 py-1 rounded text-[10px] font-bold uppercase transition-all">Dia</button>
+                        <button onclick="setTheme('dark')" id="theme-btn-dark" class="px-2 py-1 rounded text-[10px] font-bold uppercase transition-all">Noite</button>
+                    </div>
+
+                    <!-- Marcador Estrela para Salvar Artigo Atual -->
+                    <button id="bookmark-header-btn" onclick="toggleCurrentBookmark()" class="p-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 hidden" title="Favoritar Capítulo">
+                        <svg id="bookmark-header-icon" class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAINÉIS FLUTUANTES SUSPENSOS DE ABAS (Pesquisa e Favoritos) -->
+        <!-- Painel de Pesquisa -->
+        <div id="search-panel" class="hidden absolute top-32 md:top-[68px] right-4 w-80 border rounded-xl shadow-2xl z-50 p-4 max-h-[70vh] flex flex-col space-y-4">
+            <div class="relative">
+                <input id="search-input" type="text" placeholder="Pesquisar no eBook..." oninput="handleSearch(this.value)" class="w-full px-3 py-2 pl-9 rounded-lg border text-sm bg-transparent border-current focus:ring-1 focus:ring-[#23599c] focus:outline-none" />
+                <svg class="w-4 h-4 absolute left-3 top-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <div id="search-results-info" class="text-[10px] font-bold uppercase opacity-60 hidden">
+                0 trechos encontrados
+            </div>
+            <div id="search-results-content" class="overflow-y-auto space-y-3 flex-1 max-h-[45vh] pr-1">
+                <p class="text-xs text-center opacity-60 py-4">Digite termos acima para pesquisar em todo o e-book...</p>
+            </div>
+        </div>
+
+        <!-- Painel de Marcadores -->
+        <div id="bookmarks-panel" class="hidden absolute top-32 md:top-[68px] right-4 w-80 border rounded-xl shadow-2xl z-50 p-4 max-h-[70vh] flex flex-col space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider opacity-60">Seus Favoritos</h4>
+            <div id="bookmarks-panel-content" class="overflow-y-auto space-y-2 flex-1 max-h-[50vh] pr-1">
+                <!-- Injetado via JS -->
+            </div>
+        </div>
+
+        <!-- JANELA DE CONTEÚDO PRINCIPAL COM SCROLL INTERNO FOCADO -->
+        <!-- Aumentado o bottom padding (pb-28) para que o leitor possa rolar confortavelmente até o botão de "próximo" no celular -->
+        <div id="scroll-container" class="flex-1 overflow-y-auto p-4 pb-28 sm:p-8 sm:pb-20 md:p-12 md:pb-24 max-w-4xl mx-auto w-full scroll-smooth">
+            <!-- O conteúdo (capa escrita ou artigos) será renderizado dinamicamente aqui -->
+        </div>
+    </div>
+
+    <!-- BANCO DE DADOS INTEGRAL DE ARTIGOS -->
+    <script>
+        const ebookData = [
+          {
+            id: 1,
+            title: "1. Engenharias Tech: o que são e como se conectam às tecnologias do futuro?",
+            pageRange: "Págs 1-6",
+            content: [
+              "## **Engenharias Tech: o que são e como se conectam às tecnologias do futuro?**",
+              "Quando falamos em **engenharia e tecnologia**, muita gente pensa imediatamente em programação, inteligência artificial ou computadores. Embora tudo isso faça parte do cenário, as **engenharias tech** representam algo mais amplo: um conjunto de áreas responsáveis por projetar, construir, integrar, proteger e evoluir a infraestrutura tecnológica que sustenta empresas, produtos digitais e serviços usados diariamente por milhões de pessoas.",
+              "Se você já utilizou um aplicativo bancário, assistiu a uma série em uma plataforma de streaming ou fez uma compra online, existe um enorme trabalho de engenharia por trás dessas experiências. Aqui, vamos ajudar você a entender o que são as Engenharias Tech, quais áreas fazem parte desse universo, como elas se conectam ao mercado de trabalho e quais caminhos podem levar a uma carreira de alto nível na tecnologia.",
+              "## **O que são Engenharias Tech?**",
+              "As **engenharias Tech** são formações e especializações voltadas para a construção de soluções tecnológicas complexas, unindo princípios tradicionais da engenharia com áreas como software, dados, computação em nuvem, inteligência artificial, segurança digital e arquitetura de sistemas.",
+              "Na prática, existe uma diferença importante entre utilizar tecnologia e construir tecnologia.",
+              "Uma empresa pode usar uma ferramenta de análise de dados pronta, mas um profissional das engenharias Tech é capaz de desenvolver a estrutura que coleta, organiza, processa e disponibiliza esses dados de forma confiável. Qualquer pessoa pode usar um aplicativo, mas alguém precisa criar a arquitetura, proteger as informações, garantir a escalabilidade e manter o sistema funcionando.",
+              "Mas **o que é tech**? O termo é uma abreviação da palavra inglesa technology e costuma ser usado para descrever empresas, carreiras, produtos e soluções ligadas à inovação digital.",
+              "Para quem ainda está conhecendo o setor, vale começar entendendo melhor o conceito de ti, ya que ele serve como base para praticamente todas as áreas abordadas nesta página.",
+              "## **Por que as Engenharias Tech ganharam tanta relevância?**",
+              "Durante muitos anos, grande parte dos profissionais de tecnologia atuava principalmente na operação de sistemas e no suporte técnico. Hoje, ferramentas de automação e inteligência artificial já conseguem executar muitas dessas atividades repetitivas.",
+              "Assim, cresce a necessidade de profissionais capazes de:\n- Projetar sistemas complexos;\n- Estruturar ambientes em nuvem;\n- Trabalhar com grandes volumes de dados;\n- Proteger informações sensíveis;\n- Integrar diferentes tecnologias;\n- Desenvolver produtos digitais escaláveis;\n- Aplicar inteligência artificial de forma segura e eficiente.",
+              "É justamente nesse cenário que os profissionais das engenharias Tech se destacam.",
+              "## **Quais áreas fazem parte das Engenharias Tech?**",
+              "Embora compartilhem fundamentos semelhantes, as engenharias Tech possuem diferentes especializações.",
+              "### **Engenharia de Software**",
+              "A Engenharia de Software é uma das áreas mais conhecidas.",
+              "Seu objetivo é criar, testar, evoluir e manter sistemas, plataformas e aplicativos.",
+              "Além da programação, o profissional trabalha com:\n- Arquitetura de sistemas;\n- Qualidade de software;\n- Testes;\n- Documentação;\n- Escalabilidade;\n- Manutenção.",
+              "### **Engenharia de Dados**",
+              "Dados são o combustível de grande parte das decisões modernas.",
+              "A Engenharia de Dados cria a infraestrutura necessária para coleta, organização, armazenamento e disponibilização de informações.",
+              "Ela é fundamental para:\n- Business Intelligence;\n- Analytics;\n- Inteligência Artificial;\n- Machine Learning;\n- Automação.",
+              "### **Engenharia Cloud**",
+              "Cloud Computing, ou computação em nuvem, permite que sistemas funcionem em servidores acessados pela internet.",
+              "A Engenharia Cloud é responsável por projetar ambientes capazes de operar com segurança, disponibilidade e escalabilidade e, hoje, praticamente toda empresa digital depende de soluções desse tipo.",
+              "### **Engenharia de Cibersegurança**",
+              "A segurança digital deixou de ser uma preocupação exclusiva de grandes empresas.",
+              "A Engenharia de Cibersegurança atua na proteção de:\n- Sistemas;\n- Redes;\n- Infraestruturas;\n- Dados;\n- Aplicações.",
+              "Quanto maior a dependência tecnológica de uma organização, maior a importância dessa área.",
+              "### **Engenharia de Sistemas**",
+              "A Engenharia de Sistemas possui uma visão mais ampla.",
+              "Ela integra software, infraestrutura, dados, processos e segurança para garantir que tudo funcione em conjunto.",
+              "## **Como as Engenharias Tech se relacionam com a Inteligência Artificial?**",
+              "Muitas pessoas acreditam que a Inteligência Artificial substituirá profissionais de tecnologia, então para que serve o curso of informática?",
+              "Na prática, o que acontece é o oposto.",
+              "A IA automatiza tarefas operacionais, mas aumenta a demanda por especialistas capazes de:\n- Validar resultados;\n- Construir arquiteturas;\n- Garantir segurança;\n- Organizar dados;\n- Integrar sistemas;\n- Supervisionar processos automatizados.",
+              "Por isso, profissionais com visão estrutural tendem a ganhar ainda mais relevância.",
+              "## **Como se tornar um profissional das Engenharias Tech?**",
+              "Não existe um único caminho, mas existem etapas que costumam acelerar o desenvolvimento profissional.",
+              "### **Comece pelos fundamentos**",
+              "Independentemente da especialização escolhida, alguns conhecimentos aparecem em praticamente todas as trilhas:\n- Lógica de programação;\n- Algoritmos;\n- Banco de dados;\n- Redes;\n- Sistemas operacionais;\n- Segurança da informação;\n- Computação em nuvem.",
+              "Quem está começando pode consultar o guia sobre estudar ti.",
+              "### **Escolha uma área de especialização**",
+              "Depois de construir uma base sólida, é hora de definir uma direção.",
+              "Algumas pessoas se identificam mais com software. Outras preferem dados, segurança, cloud ou arquitetura. É comum surgirem dúvidas sobre como é o curso de ti, quanto tempo dura a faculdade de ti ou grade curricular de tecnologia da informação. O importante é pesquisar sobre as áreas e entender o que combina melhor com seus planos.",
+              "### **Desenvolva projetos práticos**",
+              "Projetos ajudam a conectar teoria e prática.",
+              "Você pode criar:\n- Aplicações web;\n- Dashboards de dados;\n- APIs;\n- Ambientes em nuvem;\n- Simulações de segurança.",
+              "Essa experiência costuma ser muito valorizada pelo mercado.",
+              "## **Como está o mercado para Engenharias Tech?**",
+              "O mercado de trabalho de ti continua aquecido, mas mudou.",
+              "As empresas buscam cada vez mais profissionais capazes de resolver problemas complexos e atuar em áreas estratégicas del sistema de tecnologia da informação, provocando uma crescente valorização de especializações ligadas à carreira em ti e à construção della tecnologia.",
+              "Isso explica por que diversas das áreas de TI mais bem pagas estão diretamente ligadas às Engenharias Tech.",
+              "## **Quanto ganha um profissional das Engenharias Tech?**",
+              "Os salários variam bastante conforme:\n- Área de atuação;\n- Nível de experiência;\n- Localização;\n- Porte da empresa;\n- Especialização.",
+              "No entanto, carreiras ligadas a Software, Dados, Cloud, Segurança e Arquitetura costumam estar entre as mais valorizadas.",
+              "Para aprofundar esse tema, consulte:\n- faculdade de ti quanto ganha\n- piso salarial engenheiro de software",
+              "## **É preciso programar para trabalhar com Engenharias Tech?**",
+              "Nem sempre. Existem áreas de ti que não precisa programar.",
+              "Embora a programação seja importante em muitas especializações, existem funções que valorizam mais:\n- Processos;\n- Gestão de TI;\n- Arquitetura;\n- Segurança;\n- Governança;\n- Estratégia.",
+              "## **Outras áreas relacionadas que vale conhecer**",
+              "A engenharia da informação aplica princípios de engenharia para transformar dados, sistemas e processos em soluções tecnológicas úteis. Ela ajuda a organizar, integrar e disponibilizar informações de forma confiável, sendo uma base importante para outras áreas.",
+              "Já as áreas de atuação em sistemas de informação oferecem uma visão ampla da tecnologia, combinando sistemas, processos e negócios ampliando as possibilidades de carreira ao longo do tempo.",
+              "## **Conclusão**",
+              "As Engenharias Tech representam uma evolução natural da relação entre tecnologia e construção de soluções complexas. Mais do que utilizar ferramentas, esses profissionais ajudam a projetar a infraestrutura digital que movimenta empresas, services e produtos em praticamente todos os setores da economia.",
+              "Para quem busca uma carreira com forte potencial de crescimento, capacidade de adaptação e impacto real nos negócios, esse é um universo que merece atenção. O próximo passo é aprofundar o conhecimento nas áreas que mais despertam seu interesse e entender qual delas combina melhor com seus objetivos profissionais."
+            ]
+          },
+          {
+            id: 2,
+            title: "2. O que é TI e por que o mercado está exigindo profissionais mais estruturais",
+            pageRange: "Págs 7-9",
+            content: [
+              "## **O que é TI e por que o mercado está exigindo profissionais mais estruturais**",
+              "A TI deixou de ser vista apenas como o setor responsável por resolver problemas técnicos ou manter sistemas funcionando e hoje está no centro das estratégias de crescimento das empresas, impulsionando inovação, automação, segurança e desenvolvimento de novos produtos.",
+              "Nesse cenário, cresce a demanda por profissionais capazes de compreender não apenas a operação da tecnologia, mas também sua estrutura e seu impacto nos negócios. É nesse contexto que surgem especializações ligadas às engenharias tech, áreas voltadas para a construção, evolução e sustentação das soluções que impulsionam a transformação digital.",
+              "## **O que é Tecnologia da Informação?**",
+              "A TI, sigla para Tecnologia da Informação, é responsável por coletar, armazenar, processar, proteger e disponibilizar informações por meio da tecnologia.",
+              "Na prática, a área reúne diferentes atividades relacionadas à infraestrutura tecnológica de uma organização. Isso inclui redes de computadores, bancos de dados, desenvolvimento de software, segurança digital, computação em nuvem e diversas outras disciplinas que tornam possível o funcionamento das operações modernas.",
+              "When falamos em tecnologia da informação, estamos nos referindo a um campo amplo e multidisciplinar. Por isso, embora muitas pessoas associem a TI apenas ao suporte técnico ou à manutenção de equipamentos, sua atuação vai muito além dessas funções.",
+              "Um exemplo simples é o aplicativo de um banco. Para que ele funcione corretamente, são necessários profissionais responsáveis pelo desenvolvimento do sistema, pela organização dos dados, pela segurança das transações e pela arquitetura tecnológica que suporta milhões de acessos simultâneos.",
+              "Essa diversidade de aplicações faz da TI uma das áreas mais dinâmicas e estratégicas da atualidade.",
+              "## **Como a TI evoluiu nos últimos anos?**",
+              "Com a digitalização dos negócios, a TI deixou de ocupar apenas uma função operacional e passou a exercer um papel estratégico dentro das organizações.",
+              "Se antes a tecnologia era utilizada principalmente para apoiar processos internos, hoje ela influencia diretamente a competitividade, a inovação e a experiência dos clientes.",
+              "Essa transformação ampliou significativamente o escopo da área. Além das funções tradicionais, surgiram demandas de automação de processos, integração de sistemas, inteligência artificial, análise de dados e desenvolvimento de infraestruturas escaláveis.",
+              "Como consequência, as empresas passaram a buscar profissionais capazes de atuar em níveis mais estruturais da tecnologia. Em vez de apenas utilizar ferramentas ou executar tarefas específicas, esses especialistas participam do planejamento, da construção e da evolução das soluções tecnológicas.",
+              "## **Quais são as principais oportunidades de carreira em TI?**",
+              "Um dos grandes atrativos da TI informática moderna é a diversidade de possibilidades profissionais.",
+              "Dependendo dos interesses e habilidades de cada pessoa, é possível atuar em diferentes segmentos da tecnologia e informação.",
+              "Entre as áreas mais conhecidas estão:\n- Desenvolvimento de software;\n- Administração de redes;\n- Segurança da informação;\n- Banco de dados;\n- Computação em nuvem (cloud computing);\n- Análise de dados;\n- Suporte e infraestrutura de TI.",
+              "All these specializations play crucial roles in the functioning of digital setups.",
+              "## **Por que as áreas mais estruturais estão ganhando destaque?**",
+              "À medida que os sistemas se tornam mais complexos e as organizações dependem cada vez mais da tecnologia, cresce também a necessidade de profissionais capazes de enxergar a TI de forma integrada.",
+              "Mais do que dominar ferramentas específicas, o mercado valoriza especialistas que compreendam arquiteturas, processos e estruturas capazes de sustentar a inovação em larga escala.",
+              "É nesse contexto que ganham relevância áreas associadas às engenharias tech, como engenharia de software, engenharia de dados, engenharia de inteligência artificial, engenharia de redes e engenharia de cibersegurança.",
+              "Esses profissionais atuam na criação e evolução dos ambientes tecnológicos que sustentam aplicações, plataformas digitais e operações corporativas. Suas decisões impactam diretamente fatores como desempenho, escalabilidade, disponibilidade e segurança dos sistemas.",
+              "Por isso, muitas empresas buscam profissionais que consigam conectar visão técnica, arquitetura tecnológica e objetivos de negócio.",
+              "## **O futuro da TI está cada vez mais estratégico**",
+              "A evolução da tecnologia está transformando o perfil dos profissionais mais valorizados pelo mercado.",
+              "Embora as funções tradicionais continuem sendo essenciais, cresce a demanda por especialistas capazes de projetar soluções complexas, integrar tecnologias e construir estruturas preparadas para acompanhar o crescimento das organizações.",
+              "Para quem deseja construir uma carreira de longo prazo na tecnologia da informação, desenvolver uma visão mais ampla sobre sistemas, dados, segurança e arquitetura tecnológica pode representar um diferencial importante.",
+              "Nesse cenário, as engenharias tech vêm ganhando espaço como caminhos voltados à construção das bases tecnológicas que sustentam a inovação e a transformação digital."
+            ]
+          },
+          {
+            id: 3,
+            title: "3. Curso de TI: quais são os melhores cursos para o futuro do mercado?",
+            pageRange: "Págs 10-13",
+            content: [
+              "## **Curso de TI: quais são os melhores cursos para o futuro do mercado?**",
+              "Escolher um **curso de TI** pode parecer desafiador diante da quantidade de formações disponíveis atualmente. Existem graduações voltadas para desenvolvimento de software, dados, inteligência artificial, redes, segurança da informação e diversas outras áreas, então qual escolher?",
+              "A boa notícia é que o mercado oferece oportunidades para diferentes perfis. O mais importante é encontrar uma formação alinhada aos seus interesses, habilidades e objetivos profissionais.",
+              "Nesse processo, vale conhecer as engenharias tech que vêm ganhando destaque por oferecer uma formação especializada, conectada às demandas de inovação, inteligência artificial, automação e construção de sistemas complexos.",
+              "## **Como saber qual é o melhor curso de TI para você?**",
+              "Antes de pesquisar instituições ou modalidades de ensino, é importante refletir sobre quais atividades despertam seu interesse.",
+              "A área de tecnologia é extremamente diversa. Algumas pessoas gostam de programar e desenvolver aplicações, enquanto outras preferem trabalhar com análise de dados, segurança digital, infraestrutura tecnológica ou inteligência artificial.",
+              "Uma forma simples de começar essa avaliação é identificar quais temas mais chamam sua atenção:\n- Desenvolvimento de software e programação;\n- Inteligência artificial e automação;\n- Ciência e engenharia de dados;\n- Segurança da informação;\n- Infraestrutura e redes;\n- Gestão de projetos tecnológicos.",
+              "Também vale considerar seu estilo de aprendizagem. Algumas formações oferecem uma abordagem mais prática desde os primeiros períodos, enquanto outras possuem uma base mais aprofundada em matemática, lógica e engenharia.",
+              "Outro aspecto importante é pensar no profissional que você deseja se tornar nos próximos anos. Existem cursos focados em áreas específicas e outros que proporcionam uma visão mais ampla da tecnologia.",
+              "Por isso, em vez de procurar apenas o \"melhor\" curso de TI, o ideal é buscar aquele que melhor se conecta aos seus objetivos.",
+              "## **Melhores opções de faculdade de TI**",
+              "Ao pesquisar uma **faculdade de TI**, é comum encontrar diferentes caminhos acadêmicos. Cada formação possui características próprias e pode atender perfis distintos de estudantes.",
+              "Com o avanço da transformação digital, empresas de todos os setores passaram a demandar profissionais especializados em tecnologia, ampliando as possibilidades de atuação para quem deseja ingressar na área.",
+              "### **Cursos EAD**",
+              "A modalidade **TI EAD** tem atraído cada vez mais estudantes que buscam flexibilidade para conciliar os estudos com trabalho, família ou outros compromissos.",
+              "Entre os principais benefícios estão a possibilidade de estudar em horários mais adaptáveis à rotina e o acesso a plataformas digitais, laboratórios virtuais e acompanhamento acadêmico remoto.",
+              "Entre as formações frequentemente disponíveis nessa modalidade estão:\n- Sistemas de Informação;\n- Análise e Desenvolvimento de Sistemas;\n- Gestão da Tecnologia da Informação;\n- Ciência de Dados;\n- Segurança da Informação.",
+              "Para quem possui autonomia e disciplina, o ensino online pode ser uma excelente alternativa para conquistar uma **graduação em tecnologia da informação** com flexibilidade e qualidade.",
+              "### **Cursos presenciais**",
+              "Os cursos presenciais continuam sendo uma opção bastante valorizada por estudantes que desejam uma experiência universitária mais completa.",
+              "O contato presencial com professores, laboratórios especializados, projetos colaborativos e atividades práticas pode enriquecer significativamente o processo de aprendizagem.",
+              "Muitas instituições também oferecem acesso a eventos, grupos de pesquisa, iniciativas de inovação e oportunidades de networking que podem contribuir para o desenvolvimento profissional.",
+              "## **Quais cursos de TI estão mais alinhados às transformações do mercado?**",
+              "O mercado de tecnologia evolui rapidamente, impulsionado por tendências como inteligência artificial, computação em nuvem, análise de dados, automação e cibersegurança.",
+              "Nesse cenário, diferentes formações vêm ganhando destaque, entre elas:\n- Ciência da Computação;\n- Sistemas de Informação;\n- Análise e Desenvolvimento de Sistemas;\n- Engenharia de Computação;\n- Ciência de Dados;\n- Segurança da Informação;\n- Engenharia de Software.",
+              "Todas essas opções podem abrir portas para carreiras profissionais promissoras.",
+              "### **Onde as engenharias tech se destacam?**",
+              "Entre as diversas possibilidades de **curso de TI**, as formações voltadas para engenharia devem ter atenção especial por combinarem fundamentos teóricos sólidos com aplicação prática em desafios complexos.",
+              "As chamadas engenharias tech englobam formações como:\n- Engenharia de Software;\n- Engenharia de Computação;\n- Engenharia de Dados;\n- Engenharia de Redes;\n- Engenharia de Inteligência Artificial;\n- Engenharia de Cibersegurança.",
+              "Esses cursos costumam proporcionar uma formação envolvendo desenvolvimento de soluções, arquitetura de sistemas, infraestrutura tecnológica, análise de dados, automação e inovação.",
+              "Isso não significa que outras graduações sejam menos importantes. Cursos como Sistemas de Informação, Ciência da Computação e Análise e Desenvolvimento de Sistemas continuam sendo excelentes opções para diferentes perfis profissionais.",
+              "O diferencial das engenharias voltadas para tecnologia está na profundidade técnica e na preparação para projetar, construir e evoluir sistemas cada vez mais complexos — uma característica valorizada em um mercado impulsionado por inteligência artificial, computação em nuvem e transformação digital.",
+              "## **O que considerar antes de escolher sua formação?**",
+              "Independentemente da modalidade ou da área escolhida, alguns critérios podem ajudar na tomada de decisão:",
+              "### **Projeto pedagógico atualizado**",
+              "Verifique se o currículo acompanha as tendências tecnológicas mais recentes e inclui conteúdos relacionados à inteligência artificial, dados, computação em nuvem e segurança digital.",
+              "### **Qualidade do corpo docente**",
+              "Professores com experiência acadêmica e atuação no mercado podem enriquecer significativamente o aprendizado.",
+              "### **Oportunidades práticas**",
+              "Projetos, laboratórios, desafios reais e atividades aplicadas ajudam a desenvolver competências valorizadas pelas empresas e formar portfólio.",
+              "### **Infraestrutura acadêmica**",
+              "Ambientes de aprendizagem modernos e recursos tecnológicos adequados contribuem para uma formação mais completa.",
+              "### **Reconhecimento da instituição**",
+              "Pesquise a reputação da instituição e sua tradição na formação de profissionais de tecnologia.",
+              "### **Continuidade dos estudos**",
+              "Avalie as possibilidades de especialização, pós-graduação e atualização profissional oferecidas após a conclusão da graduação.",
+              "## **Conclusão**",
+              "O melhor **curso de TI** não é necessariamente aquele que está em maior evidência, mas sim o que faz sentido para seus interesses, seu perfil de aprendizagem e seus objetivos profissionais.",
+              "Seja em uma **faculdade de TI** presencial ou em um programa de **TI EAD**, o mais importante é construir uma base sólida para acompanhar as transformações constantes do setor."
+            ]
+          },
+          {
+            id: 4,
+            title: "4. A área de TI: descubra quais caminhos podem fortalecer sua carreira no futuro",
+            pageRange: "Págs 14-16",
+            content: [
+              "## **A área de TI: descubra quais caminhos podem fortalecer sua carreira no futuro**",
+              "Escolher uma **área de TI** envolve muito mais do que acompanhar tendências. Algumas profissões ganham destaque por determinados períodos, enquanto outras permanecem relevantes porque estão ligadas à criação, evolução e sustentação das soluções tecnológicas que movem empresas e mercados.",
+              "Por isso, entender **quais são as áreas de TI** e como elas se relacionam com as transformações do setor é um passo importante para construir uma trajetória profissional sólida. Nesse cenário, as engenharias tech vêm se destacando por combinar uma base técnica consistente com a capacidade de acompanhar a evolução tecnológica ao longo do tempo.",
+              "## **Quais são as áreas de TI com mais oportunidades?**",
+              "A tecnologia oferece diferentes possibilidades de atuação, permitindo que profissionais com perfis variados encontrem uma especialização alinhada aos seus interesses.",
+              "Entre os principais **áreas da tecnologia da informação**, destacam-se:\n- Desenvolvimento de software;\n- Análise de sistemas;\n- Administração de redes;\n- Banco de dados;\n- Segurança da informação;\n- Gestão de tecnologia.",
+              "Essas carreiras continuam sendo fundamentais para empresas de todos os setores. Um desenvolvedor, por exemplo, cria aplicações e plataformas digitais. Já um especialista em segurança atua protegendo dados, sistemas e infraestruturas contra ameaças cada vez mais sofisticadas.",
+              "O mais importante é compreender que não existe apenas uma única **área de tecnologia** promissora. O mercado valoriza profissionais que desenvolvem conhecimento sólido e capacidade de adaptação.",
+              "## **Como as engenharias tech se diferenciam?**",
+              "Dentro das diversas opções de **carreiras em TI**, as engenharias tech vêm ganhando espaço por sua abordagem ampla e orientada à resolução de problemas complexos.",
+              "Esse grupo reúne formações como:\n- Engenharia de Software;\n- Engenharia de Computação;\n- Engenharia de Dados;\n- Engenharia de Redes;\n- Engenharia de Inteligência Artificial;\n- Engenharia de Cibersegurança.",
+              "O diferencial dessas formações está na combinação entre fundamentos de engenharia, desenvolvimento tecnológico e visão sistêmica.",
+              "Enquanto algumas funções atuam em etapas específicas de um projeto, profissionais dessas áreas frequentemente participam da arquitetura, implementação e evolução de soluções completas, envolvendo software, infraestrutura, dados, automação e inteligência artificial.",
+              "Por isso, muitos estudantes enxergam as engenharias como uma alternativa interessante para quem deseja atuar na construção de tecnologias que sustentam a transformação digital.",
+              "## **Como escolher a melhor área de TI para seu perfil?**",
+              "Ao pesquisar **quais são as áreas de TI**, é comum focar apenas nas tendências do momento. No entanto, a escolha deve considerar fatores mais amplos.",
+              "Pergunte a si mesmo:\n- Você gosta de programar e criar aplicações?\n- Tem interesse por dados e análise de informações?\n- Prefere trabalhar com infraestrutura e redes?\n- Se identifica com segurança digital?\n- Gosta de resolver problemas complexos e projetar soluções?",
+              "As respostas ajudam a identificar uma **área de TI** compatível com seus interesses e objetivos profissionais.",
+              "Além disso, vale lembrar que o mercado muda constantemente. Por isso, escolher uma formação que desenvolva raciocínio lógico, pensamento crítico e capacidade de aprendizado contínuo costuma ser uma estratégia importante para o crescimento profissional.",
+              "## **Como se preparar para o mercado de tecnologia?**",
+              "Independentemente da especialização escolhida, algumas práticas ajudam a fortalecer a carreira:\n- Desenvolver uma base sólida em lógica e programação;\n- Participar de projetos práticos durante a formação;\n- Acompanhar as principais tendências do setor;\n- Construir um portfólio de projetos;\n- Investir em aprendizado contínuo.",
+              "A tecnologia evolui rapidamente, e profissionais que mantêm seus conhecimentos atualizados costumam ampliar suas oportunidades de atuação.",
+              "## **Conclusão**",
+              "A melhor **área de TI** não depende apenas das tendências atuais, mas da combinação entre interesses pessoais, habilidades e objetivos de carreira.",
+              "As áreas tradicionais continuam essenciais para o funcionamento das organizações, enquanto as engenharias tech se destacam pela abrangência e pela conexão com desafios tecnológicos cada vez mais complexos."
+            ]
+          },
+          {
+            id: 5,
+            title: "5. Gestão de TI moderna: da operação à governança de ecossistemas tecnológicos",
+            pageRange: "Págs 17-19",
+            content: [
+              "## **Gestão de TI moderna: da operação à governança de ecossistemas tecnológicos**",
+              "A **gestão de TI** deixou de ser apenas o cuidado com computadores, sistemas internos e suporte técnico. Hoje, ela envolve coordenar pessoas, dados, plataformas, segurança, infraestrutura e inovação para garantir que a tecnologia contribua diretamente para os objetivos do negócio.",
+              "Essa transformação acompanha o aumento da complexidade dos ambientes digitais. Empresas utilizam múltiplos sistemas conectados, serviços em nuvem, ferramentas de inteligência artificial e grandes volumes de dados. Nesse cenário, a **gestão de tecnologia da informação** assume um papel estratégico, voltado para a governança de ecossistemas tecnológicos cada vez mais integrados.",
+              "Ao mesmo tempo, as engenharias tech se tornam importantes aliadas nesse processo, fornecendo os conhecimentos técnicos e os princípios de engenharia necessários para criar soluções seguras, scaláveis e sustentáveis.",
+              "## **Gestão da tecnologia da informação: o que é?**",
+              "Uma dúvida comum entre estudantes e profissionais é: o que é **gestão da tecnologia da informação**?",
+              "De forma simples, trata-se da área responsável por planejar, organizar e supervisor o uso da tecnologia dentro de uma organização.",
+              "Isso inclui decisões relacionadas a infraestrutura, sistemas, segurança digital, integração de plataformas, gestão de projetos e inovação tecnológica.",
+              "Mais do que administrar recursos técnicos, a gestão moderna busca garantir que a tecnologia gera valor para o negócio, aumente a eficiência operacional e apoie o crescimento da organização.",
+              "## **Gestão de tecnologia da informação: o que faz na prática?**",
+              "Quando se pergunta **o que faz a gestão de tecnologia da informação**, a resposta envolve diversas responsabilidades estratégicas e operacionais.",
+              "Entre as principais atividades estão:\n- Planejar investimentos em tecnologia;\n- Gerenciar sistemas e infraestrutura digital;\n- Garantir a segurança das informações;\n- Coordenar projetos tecnológicos;\n- Integrar ferramentas e plataformas;\n- Definir políticas de governança;\n- Apoiar iniciativas de inovação.",
+              "Na prática, a **gestão de TI** atua conectando as necessidades da empresa às soluções tecnológicas mais adequadas, garantindo que diferentes áreas trabalhem de forma integrada.",
+              "## **O desafio da governança em ambientes complexos**",
+              "A tecnologia atual funciona como um ecossistema. Sistemas de atendimento se conectam a bancos de dados, plataformas de análise, ferramentas de automação, aplicações em nuvem e mechanisms de segurança.",
+              "Por isso, a **gestão de tecnologia da informação** deixou de focar apenas na operação de recursos isolados e passou a atuar na coordenação de ambientes complexos e interdependentes.",
+              "Um exemplo simples é a implantação de uma nova plataforma digital. Não basta apenas instalar o system. É necessário integrar dados, garantir segurança, capacitar equipes, monitorar desempenho e avaliar impactos em outras áreas da organização.",
+              "Essa visão sistêmica é um dos principais diferenciais da gestão tecnológica moderna.",
+              "## **Como as engenharias tech apoiam a gestão de TI?**",
+              "Para que a estratégia tecnológica seja executada com eficiência, é necessário contar com soluções bem projetadas e estruturadas.",
+              "É nesse ponto que as engenharias tech atuam como ferramentas de apoio à gestão.",
+              "Cada especialidade contribui para diferentes aspects da governança tecnológica:\n- Engenharia de Software: desenvolvimento de sistemas robustos e escaláveis;\n- Engenharia de Dados: organização e disponibilização de informações para tomada de decisão;\n- Engenharia de Redes: garantia de conectividade e desempenho;\n- Engenharia de Cibersegurança: proteção de ambientes e dados críticos;\n- Engenharia de Inteligência Artificial: desenvolvimento de soluções automatizadas e inteligentes.",
+              "Enquanto a gestão define prioridades, estratégias e objetivos, as engenharias transformam essas diretrizes em soluções tecnológicas concretas.",
+              "Por isso, gestão e engenharia não competem entre si. Pelo contrário: atuam de forma complementar para garantir eficiência, segurança e evolução contínua dos ambientes digitais.",
+              "## **Como se preparar para atuar na gestão tecnológica?**",
+              "Profissionais que desejam seguir carreira nessa área precisam desenvolver uma combinação de competências técnicas e estratégicas.",
+              "Algumas habilidades especialmente valorizadas incluem:\n- Pensamento sistêmico;\n- Gestão de projetos;\n- Governança tecnológica;\n- Segurança da informação;\n- Análise de dados;\n- Comunicação entre equipes técnicas e de negócio;\n- Capacidade de adaptação às mudanças tecnológicas.",
+              "Também é importante buscar experiências práticas que permitam compreender como as decisões tecnológicas impactam processos, pessoas e resultados organizacionais.",
+              "## **Conclusão**",
+              "A **gestão de TI** moderna vai muito além da manutenção de sistemas. Seu papel está cada vez mais ligado à governança de ecossistemas tecnológicos complexos, conectando estratégia, inovação e operação.",
+              "Nesse contexto, as engenharias tech contribuem como importantes ferramentas de apoio, aplicando princípios de engenharia para desenvolver soluções eficientes, seguras e preparadas para crescer junto com as necessidades das organizações."
+            ]
+          },
+          {
+            id: 6,
+            title: "6. Piso salarial de engenheiros de software: por que o título de engenheiro pode valorizar sua carreira tech?",
+            pageRange: "Págs 20-22",
+            content: [
+              "## **Piso salarial de engenheiros de software: por que o título de engenheiro pode valorizar sua carreira tech?**",
+              "A discussão sobre **piso salarial de engenheiros de software** vai muito além da remuneração. Ela envolve reconhecimento profissional, formação técnica, responsabilidade sobre projetos complexos e o papel que a engenharia desempenha no desenvolvimento da tecnologia moderna.",
+              "Em um mercado cada vez mais dependente de sistemas digitais, empresas buscam profissionais capazes não apenas de programar, mas também de projetar, estruturar e evoluir soluções de forma segura e escalável. É nesse contexto que o título de **engenheiro tech** ganha relevância.",
+              "Por isso, as engenharias tech vêm despertando o interesse de estudantes e profissionais que desejam construir uma carreira sólida, alinhada às demandas de longo prazo da tecnologia.",
+              "## **O que significa ser engenheiro no mundo digital?**",
+              "No universo da tecnologia, ser engenheiro vai além da capacidade de desenvolver código.",
+              "Enquanto a programação está relacionada à implementação de funcionalidades, a engenharia envolve planejamento, arquitetura, análise de riscos, documentação, testes, manutenção e evolução contínua dos sistemas.",
+              "Um engenheiro de software, por exemplo, pode participar da definição de como uma aplicação será construída para suportar milhões de usuários, manter a segurança dos dados e permitir futuras expansões sem comprometer o desempenho.",
+              "Essa abordagem diferencia o profissional que apenas executa tarefas daquele que participa da construção estrutural da solução.",
+              "## **O papel das Engenharias Tech na construção da tecnologia**",
+              "As engenharias tech reúnem áreas como:\n- Engenharia de Software;\n- Engenharia de Computação;\n- Engenharia de Dados;\n- Engenharia de Redes;\n- Engenharia de Inteligência Artificial;\n- Engenharia de Cibersegurança.",
+              "Embora cada especialidade possua características próprias, todas compartilham princípios fundamentais da engenharia: planejamento, modelagem, validação, escalabilidade, confiabilidade e melhoria contínua.",
+              "Na prática, isso significa que um **engenheiro tech** costuma participar de decisões estratégicas relacionadas à arquitetura de sistemas, integração de tecnologias, governança técnica e resolução de problemas complexos.",
+              "Esse perfil se torna cada vez mais relevante em um cenário marcado por inteligência artificial, computação em nuvem, grandes volumes de dados e ambientes digitais altamente conectados.",
+              "## **Como o título de engenheiro influencia a valorização profissional?**",
+              "O reconhecimento profissional associado ao título de engenheiro está relacionado ao nível de responsabilidade exigido em muitas funções.",
+              "Projetar sistemas críticos, garantir a disponibilidade de plataformas digitais, proteger dados sensíveis ou desenvolver arquiteturas escaláveis são atividades que exigem conhecimento técnico aprofundado e visão sistêmica.",
+              "Por isso, profissionais com formação em engenharia frequentemente são associados a posições que envolvem liderança técnica, tomada de decisão e responsabilidade sobre projetos de maior complexidade.",
+              "Seu papel na infraestrutura organizacional confere maior visibilidade estratégica e responsabilidade técnica.",
+              "No entanto, o título de engenheiro pode representar para o mercado uma preparação estruturada para lidar com desafios tecnológicos de longo prazo.",
+              "## **Piso salarial e remuneração: qual é a relação?**",
+              "Ao pesquisar sobre **piso salarial de engenheiros de software**, é importante compreender que existem diferenças entre salário praticado pelo mercado, remuneração negociada individualmente e regras relacionadas ao exercício profissional da engenharia.",
+              "No Brasil, o salário mínimo profissional da engenharia é regulamentado pela Lei Federal nº 4.950-A, que estabelece parâmetros para profissionais enquadrados nas atividades abrangidas pelo Sistema Confea/Crea.",
+              "Entretanto, a aplicação dessas regras pode variar conforme fatores como:\n- Formação acadêmica;\n- Registro profissional;\n- Cargo exercido;\n- Contrato de trabalho;\n- Convenções coletivas;\n- Entendimentos jurídicos específicos.",
+              "Por isso, ao buscar informações sobre o **salário de um engenheiro de TI**, é importante analisar o contexto da vaga, o nível de experiência exigido e as responsabilidades associadas à função.",
+              "O título, por si só, não garante uma remuneração maior. Porém, pode ampliar o acesso a posições que demandam competências valorizadas pelo mercado e que costumam estar associadas a níveis mais elevados de responsabilidade técnica.",
+              "## **O futuro da valorização profissional em tecnologia**",
+              "À medida que os sistemas digitais se tornam mais complexos, cresce a demanda por profissionais capazes de projetar soluções robustas e sustentáveis.",
+              "Nesse cenário, as engenharias tech ganham destaque por oferecer uma formação alinhada à construção, evolução e governança da tecnologia.",
+              "Mais do que dominar ferramentas específicas, o diferencial passa a ser a capacidade de compreender problemas complexos e desenvolver soluções preparadas para crescer ao longo do tempo.",
+              "## **Conclusão**",
+              "A discussão sobre o **piso salarial de um engenheiro de software** reflete uma questão mais ampla: o valor gerado por profissionais capazes de projetar e sustentar sistemas tecnológicos complexos.",
+              "O título de **engenheiro tech** não define sozinho o sucesso profissional, mas pode representar uma formação voltada para desafios de alta responsabilidade e impacto."
+            ]
+          },
+          {
+            id: 7,
+            title: "7. Engenharia da informação: o que é engenharia informática e como ela se relaciona com as Engenharias Tech?",
+            pageRange: "Págs 23-25",
+            content: [
+              "## **Engenharia da informação: o que é engenharia informática e como ela se relaciona com as Engenharias Tech?**",
+              "A expressão **engenharia da informação** pode gerar dúvidas já que nem sempre é utilizada da mesma forma em todos os países. Em muitos contextos, especialmente em Portugal, o termo mais comum é **engenharia informática**, utilizado para cursos superiores voltados para computação, software, sistemas de informação e desenvolvimento tecnológico.",
+              "No Brasil, essa mesma lógica costuma aparecer de forma mais ampla nas engenharias tech, que reúnem diferentes formações ligadas à construção, evolução e governança da tecnologia, incluindo software, dados, redes, inteligência artificial e cibersegurança.",
+              "Por isso, compreender o significado desses termos ajuda a comparar cursos, entender diferentes nomenclaturas e identificar oportunidades de carreira em um mercado cada vez mais tecnológico.",
+              "## **Engenharia da informação: o que é?**",
+              "A **engenharia da informação** pode ser entendida como uma área dedicada ao planejamento, organização, desenvolvimento e gestão de sistemas baseados em informação.",
+              "Seu objetivo é transformar dados, processos e necessidades organizacionais em soluções tecnológicas eficientes.",
+              "Na prática, isso pode envolver atividades como:\n- Desenvolvimento de sistemas;\n- Estruturação de bancos de dados;\n- Integração de plataformas digitais;\n- Processamento e análise de informações;\n- Automação de processos;\n- Criação de aplicações corporativas.",
+              "Embora a nomenclatura varie de acordo com o país ou instituição, o foco permanece semelhante: utilizar princípios de engenharia para construir tecnologias capazes de resolver problemas complexos.",
+              "## **O que significa engenharia informática?**",
+              "A expressão **engenharia informática** é amplamente utilizada em Portugal para designar cursos relacionados à computação e ao desenvolvimento de sistemas.",
+              "Em muitas universities portuguesas, trata-se de uma formação que combina fundamentos da engenharia com disciplinas de programação, arquitetura de software, redes, inteligência artificial e sistemas de informação.",
+              "Quando um estudante brasileiro pesquisa por engenharia informática, normalmente encontra conteúdos muito próximos de áreas como:\n- Engenharia de Software;\n- Engenharia de Computação;\n- Ciência da Computação;\n- Sistemas de Informação;\n- Engenharia de TI.",
+              "Por isso, embora os nomes possam variar, existe uma forte relação entre esses conceitos.",
+              "## **Quais áreas fazem parte desse universo?**",
+              "A **engenharia da informação** se conecta a diversas especializações tecnológicas.",
+              "### **Desenvolvimento de software**",
+              "Responsável pela criação de sistemas, aplicativos e plataformas digitais utilizados por empresas e usuários.",
+              "### **Engenharia de dados**",
+              "Focada na coleta, organização e processamento de grandes volumes de informações para apoiar decisões estratégicas.",
+              "### **Redes e infraestrutura**",
+              "Voltada para a conectividade entre sistemas, servidores, dispositivos e ambientes em nuvem.",
+              "### **Cibersegurança**",
+              "Responsável pela proteção de sistemas, redes e dados contra ameaças digitais.",
+              "### **Inteligência artificial**",
+              "Área dedicada ao desenvolvimento de soluções capazes de automatizar processos, reconhecer padrões e apoiar a tomada de decisões.",
+              "All these fields share structural engineering principles.",
+              "## **Como a engenharia da informação se conecta às Engenharias Tech?**",
+              "A principal conexão está na utilização dos fundamentos da engenharia para resolver desafios tecnológicos.",
+              "Nas engenharias tech, esse princípio aparece de forma clara. Em vez de focar apenas no uso de ferramentas ou linguagens específicas, essas formações desenvolvem competências relacionadas a planejamento, arquitetura, modelagem, validação, escalabilidade e melhoria contínua.",
+              "Nesse contexto, a **engenharia de TI** pode ser entendida como parte desse ecossistema mais amplo de formações voltadas para a construção da tecnologia.",
+              "Assim como ocorre com a engenharia informática em Portugal, as Engenharias Tech reúnem diferentes especializações sob uma mesma lógica: formar profissionais preparados para desenvolver soluções complexas com profundidade técnica e visão sistêmica.",
+              "## **Por que esse conceito é cada vez mais relevante?**",
+              "A transformação digital aumentou a necessidade de profissionais capazes de compreender não apenas ferramentas específicas, mas também a estrutura que sustenta sistemas, plataformas e ecossistemas tecnológicos.",
+              "Empresas buscam especialistas que consigam projetar soluções seguras, escaláveis e preparadas para evoluir ao longo do tempo.",
+              "Por isso, formações ligadas à **engenharia da informação** ganham relevância em um cenário marcado por inteligência artificial, computação em nuvem, dados e automação.",
+              "## **Conclusão**",
+              "A **Docência da informação** representa uma abordagem voltada à construção e organização de soluções tecnológicas baseadas em dados, sistemas e processos.",
+              "Já a **engenharia informática** descreve formações muito próximas das engenharias tech, compartilhando a mesma visão de aplicação dos princípios de engenharia à tecnologia."
+            ]
+          },
+          {
+            id: 8,
+            title: "8. Quanto tempo dura a faculdade de TI? Entenda o tempo investido na sua formação",
+            pageRange: "Págs 26-28",
+            content: [
+              "## **Quanto tempo dura a faculdade de TI? Entenda o tempo investido na sua formação**",
+              "Ao pesquisar **quanto tempo dura a faculdade de TI**, muitas pessoas buscam uma resposta rápida para planejar sua rotina, seus investimentos e seus objetivos profissionais. No entanto, a duração do curso é apenas um dos fatores que devem ser considerados na escolha da formação.",
+              "Dependendo do caminho escolhido, o estudante pode encontrar cursos mais curtos, voltados para uma entrada rápida no mercado, ou formações mais extensas, que oferecem uma base aprofundada em computação, matemática, arquitetura de sistemas e engenharia.",
+              "É nesse contexto que as engenharias tech ganham destaque. Além de proporcionarem uma formação sólida, esses cursos podem levar à obtenção do título de engenheiro reconhecido pelo mercado, agregando valor à trajetória profissional.",
+              "## **O que determina a duração de um curso de TI?**",
+              "A resposta para “**quanto tempo dura o curso de TI**” depende principalmente do tipo de formação escolhida.",
+              "Entre os fatores que influenciam a duração estão:\n- Modalidade do curso;\n- Carga horária exigida pelo MEC;\n- Projeto pedagógico da instituição;\n- Tipo de graduação (tecnólogo, bacharelado ou engenharia).",
+              "Por isso, não existe uma resposta única para a pergunta.",
+              "Cursos tecnológicos costumam priorizar competências práticas e geralmente possuem menor duração. Já bacharelados e engenharias dedicam mais tempo ao desenvolvimento de fundamentos teóricos e técnicos.",
+              "## **Quanto tempo dura cada tipo de graduação?**",
+              "### **Cursos tecnológicos**",
+              "Formações como Análise e Desenvolvimento de Sistemas normalmente possuem duração aproximada de dois a três anos, dependendo da instituição.",
+              "Esses cursos são indicados para quem deseja ingressar rapidamente no mercado e desenvolver competências específicas em tecnologia.",
+              "### **Bacharelados**",
+              "Cursos como Ciência da Computação e Sistemas de Informação costumam ter duração média de quatro anos.",
+              "Nesse período, os estudantes desenvolvem conhecimentos mais amplos sobre desenvolvimento de software, algoritmos, infraestrutura, bancos de dados e arquitetura de sistemas.",
+              "### **Engenharias Tech**",
+              "As engenharias tech geralmente possuem duração próxima de cinco anos, seguindo as diretrizes de carga horária estabelecidas para cursos de engenharia.",
+              "Esse tempo adicional está relacionado à profundidade da formação. Além dos conteúdos tecnológicos, os estudantes desenvolvem conhecimentos em matemática, modelagem, projeto de sistemas, resolução de problemas complexos e fundamentos de engenharia.",
+              "Para quem busca uma formação menos dependente de ferramentas específicas e mais orientada a princípios duradouros, esse investimento de tempo pode representar uma vantagem ao longo da carreira.",
+              "## **O título de engenheiro pode fazer diferença?**",
+              "Um dos diferenciais das formações em engenharia é a possibilidade de obter o título de engenheiro.",
+              "Em cursos como Engenharia de Computação, esse é um título formal, regulamentado e que pode permitir o registro profissional junto ao CREA, conforme as regras do Sistema Confea/Crea.",
+              "Já em outras formações, o termo \"engenheiro\" pode aparecer de forma mais associada ao mercado, especially em cargos como engenheiro de software, engenheiro de dados ou engenheiro de inteligência artificial.",
+              "Independentemente da nomenclatura, o mercado costuma associar esse título a profissionais preparados para projetar, arquitetar e evoluir soluções tecnológicas complexas.",
+              "Por isso, ao avaliar a duração do curso, é importante considerar também o valor agregado pela formação e pelas responsabilidades que ela pode proporcionar no futuro.",
+              "## **E as pós-graduações?**",
+              "As pós-graduações em tecnologia normalmente possuem duração menor do que uma graduação completa e são indicadas para quem já possui formação superior.",
+              "Elas podem aprofundar conhecimentos em áreas tech e, embora sejam excelentes opções de especialização, não substituem a formação de base oferecida por uma graduação para quem está iniciando sua jornada profissional.",
+              "## **O que vale mais: rapidez ou profundidade?**",
+              "A resposta depende dos seus objetivos.",
+              "Quem busca inserção rápida no mercado pode encontrar nos cursos tecnológicos uma excelente oportunidade. Já quem deseja desenvolver uma base técnica robusta, preparada para acompanhar as mudanças do setor ao longo dos anos, pode se beneficiar de formações mais extensas.",
+              "Nesse cenário, as engenharias tech se destacam por priorizarem fundamentos duradouros, raciocínio sistêmico e capacidade de projetar soluções complexas — competências que tendem a permanecer relevantes mesmo quando as tecnologias evoluem.",
+              "## **Conclusão**",
+              "Ao analisar **quanto tempo dura a faculdade de TI**, é importante enxergar a duração do curso como um investimento em formação e não apenas como um período de espera.",
+              "Cursos mais curtos podem acelerar a entrada no mercado, enquanto graduações mais longas, especialmente as Engenharias Tech, oferecem fundamentos mais profundos e, em alguns casos, a possibilidade de conquistar o título formal de engenheiro."
+            ]
+          },
+          {
+            id: 9,
+            title: "9. Engenharia de Software, Engenharia da Computação e Engenharias Tech: o que muda?",
+            pageRange: "Págs 29-32",
+            content: [
+              "## **Engenharia de Software, Engenharia da Computação e Engenharias Tech: o que muda?**",
+              "A dúvida entre **engenharia de software ou engenharia da computação** é comum para quem deseja construir uma **carreira em tecnologia** com base sólida e boas perspectivas de crescimento. Embora ambas façam parte do universo da computação, cada formação possui objetivos, abordagens e áreas de atuação diferentes.",
+              "Além dessas opções, existe um conjunto de formações cada vez mais relevante: as engenharias tech. Elas ampliam as possibilidades para quem deseja atuar com dados, inteligência artificial, redes, segurança digital e outras áreas estratégicas da tecnologia.",
+              "Entender as diferenças e complementaridades entre esses caminhos é fundamental para escolher a **formação em tecnologia** mais alinhada aos seus interesses e objetivos profissionais.",
+              "## **Engenharia de Software: foco na construção de sistemas digitais**",
+              "A Engenharia de Software é voltada para o desenvolvimento, evolução e manutenção de sistemas, aplicativos e plataformas digitais.",
+              "Durante a graduação, o estudante costuma aprofundar conhecimentos em:\n- Programação;\n- Arquitetura de software;\n- Testes e qualidade;\n- Gestão de projetos;\n- Experiência do usuário;\n- Metodologias de desenvolvimento.",
+              "O principal objetivo é formar profissionais capazes de criar soluções tecnológicas escaláveis, seguras e preparadas para evoluir ao longo do tempo.",
+              "Na prática, quem segue essa área pode atuar no desenvolvimento de aplicações corporativas, plataformas digitais, sistemas financeiros, softwares embarcados e diversos outros produtos tecnológicos.",
+              "Para pessoas que gostam de construir soluções digitais e trabalhar diretamente com software, essa costuma ser uma escolha bastante natural.",
+              "## **Engenharia da Computação: integração entre software e hardware**",
+              "Ao se perguntar se a melhor escolha seria **engenharia de software ou engenharia da computação**, é importante levar em consideração que uma das principais diferenças está na abrangência do estudo da infraestrutura computacional.",
+              "A Engenharia da Computação combina conhecimentos de software com disciplinas ligadas ao funcionamento físico dos sistemas computacionais.",
+              "Entre os temas normalmente abordados estão:\n- Arquitetura de computadores;\n- Sistemas embarcados;\n- Eletrônica;\n- Redes de computadores;\n- Automação;\n- Internet das Coisas (IoT);\n- Desenvolvimento de software.",
+              "Essa formação pode ser especialmente interessante para quem deseja compreender como programas, dispositivos e componentes físicos interagem para criar soluções tecnológicas completas.",
+              "Profissionais da área costumam atuar em setores como automação industrial, dispositivos inteligentes, robótica, telecomunicações e infraestrutura computacional.",
+              "Além disso, a Engenharia da Computação é uma das formações que possibilitam a obtenção formal do título de engenheiro, com possibilidade de registro profissional junto ao CREA, conforme as regras do Sistema Confea/Crea.",
+              "## **Onde entram as Engenharias Tech?**",
+              "As engenharias tech não substituem a Engenharia de Software nem a Engenharia da Computação. Na verdade, elas ampliam esse universo ao reunir especializações voltadas para diferente desafios tecnológicos.",
+              "Entre os principais exemplos estão:\n- Engenharia de Dados;\n- Engenharia de Redes;\n- Engenharia de Inteligência Artificial;\n- Engenharia de Cibersegurança;\n- Engenharia de Software;\n- Engenharia de Computação.",
+              "O ponto em comum entre essas formações é a aplicação de princípios de engenharia à tecnologia.",
+              "Isso significa trabalhar com planejamento, modelagem, validação, documentação, análise de riscos e construção de soluções capazes de operar com eficiência, segurança e escalabilidade.",
+              "Em um mercado cada vez mais especializado, estas formações permitem que os profissionais desenvolvam competências aprofundadas em áreas específicas sem perder a visão sistêmica dos ambientes tecnológicos.",
+              "## **Como escolher a melhor formação em tecnologia?**",
+              "A escolha entre **engenharia de software ou engenharia da computação** deve começar pela identificação dos problemas que você gostaria de resolver ao longo da carreira.",
+              "### **Você gosta de criar sistemas e aplicações?**\nSe o interesse está na construção de produtos digitais, desenvolvimento de software e experiência do usuário, Engenharia de Software pode ser uma excelente opção.\n\n### **Você se interessa por hardware e infraestrutura?**\nSe além da programação existe curiosidade sobre dispositivos, eletrônica, automação e integration entre sistemas físicos e digitais, Engenharia da Computação tende a oferecer uma experiência mais alinhada.\n\n### **Seu interesse está em áreas específicas da tecnologia?**\nQuem gosta de inteligência artificial, segurança digital, redes ou dados também pode considerar outras formações ligadas às engenharias tech, que oferecem especializações voltadas para esses segmentos.",
+              "## **O que todas essas formações têm em comum?**",
+              "Independentemente da escolha, todas compartilham um objetivo importante: desenvolver profissionais capazes de construir soluções tecnológicas sustentáveis e preparadas para evoluir.",
+              "Mais do que dominar ferramentas específicas, uma boa **formação em tecnologia** offers fundamentals that remain relevant even as languages, platforms, and trends change.",
+              "Esse é um dos principais diferenciais das formações orientadas por princípios de engenharia.",
+              "## **Conclusão**",
+              "A escolha entre **engenharia de software ou engenharia da computação** depende principalmente dos seus interesses e objetivos profissionais.",
+              "Enquanto a Engenharia de Software concentra seus esforços na construção e evolução de sistemas digitais, a Engenharia da Computação amplia o olhar para a integração entre software e hardware.",
+              "Já as engenharias tech expandem esse campo ao oferecer especializações voltadas para dados, inteligência artificial, segurança, redes e outras áreas estratégicas da inovação tecnológica."
+            ]
+          },
+          {
+            id: 10,
+            title: "10. Para que serve o curso de informática hoje, se a IA já executa as tarefas básicas sozinha?",
+            pageRange: "Págs 33-36",
+            content: [
+              "## **Para que serve o curso de informática hoje, se a IA já executa as tarefas básicas sozinha?**",
+              "Com o avanço de ferramentas como ChatGPT, Copilot e outras inteligências artificiais, muita gente passou a se perguntar: **para que serve o curso de informática** atualmente?",
+              "A dúvida é compreensível. Afinal, hoje a tecnologia consegue criar textos, gerar códigos, automatizar tarefas e até responder perguntas complexas em poucos segundos.",
+              "But existe um detalhe importante: a inteligência artificial utiliza sistemas que foram criados, treinados, integrados e mantidos por profissionais de tecnologia. Em outras palavras, enquanto a IA executa tarefas específicas, são as pessoas que projetam e desenvolvem a estrutura que permite que essas ferramentas existam.",
+              "Por isso, entender **para que serve o curso de informática** significa compreender que a área vai muito além do uso de softwares. Ela envolve a criação, evolução, proteção e gestão das tecnologias que fazem parte do nosso dia a dia.",
+              "## **O que é TI e qual a diferença para informática?**",
+              "Antes de escolher uma formação, vale entender alguns conceitos básicos.",
+              "TI significa Tecnologia da Informação. Trata-se do conjunto de recursos, sistemas, dados e processos utilizados para criar, armazenar, processar e compartilhar informações.",
+              "Já a informática é um termo mais amplo e popular, normalmente associado ao uso e ao desenvolvimento de tecnologias digitais.",
+              "Quando alguém pesquisa sobre faculdades de TI, geralmente está buscando cursos voltados para áreas como programação, dados, inteligência artificial, segurança digital, infraestrutura e desenvolvimento de sistemas.",
+              "Ou seja, não existe apenas uma profissão em tecnologia. Existem diversos caminhos possíveis.",
+              "## **Para que serve o curso de informática hoje?**",
+              "A função dos cursos de informática mudou bastante ao longo dos anos.",
+              "Se antes muitas formações eram focadas em ferramentas básicas e manutenção de computadores, atualmente os cursos preparam profissionais para atuar em áreas estratégicas da transformação digital.",
+              "De forma geral, eles servem para capacitar pessoas a:\n- Desenvolver sistemas e aplicativos;\n- Trabalhar com inteligência artificial;\n- Analisar e organizar dados;\n- Criar soluções digitais;\n- Proteger informações e sistemas;\n- Automatizar processos;\n- Projetar infraestruturas tecnológicas.",
+              "Por isso, mesmo com a evolução da IA, continua existindo uma grande demanda por profissionais capazes de compreender o funcionamento della tecnologia em um nível mais profundo.",
+              "## **O que é curso de tecnologia?**",
+              "Uma dúvida comum entre quem está começando a pesquisar a área é: **o que é curso de tecnologia**?",
+              "Na prática, trata-se de qualquer formação voltada para o desenvolvimento de competências relacionadas à tecnologia da informação.",
+              "Esses cursos podem ter diferentes objetivos e níveis de especialização.",
+              "Alguns são mais voltados para programação, enquanto outros focam em dados, segurança, inteligência artificial ou infraestrutura tecnológica.",
+              "A escolha ideal depende dos interesses e objetivos de cada estudante.",
+              "## **Principais áreas da tecnologia e seus cursos**",
+              "### **Desenvolvimento de Software**",
+              "É uma das áreas mais conhecidas da tecnologia.",
+              "Os profissionais criam sistemas, aplicativos, plataformas digitais e soluções utilizadas por empresas e usuários.",
+              "Cursos relacionados:\n- Engenharia de Software;\n- Análise e Desenvolvimento de Sistemas;\n- Desenvolvimento Full Stack;\n- Sistemas de Informação.",
+              "### **Ciência de Dados e Inteligência Artificial**",
+              "Empresas geram grandes volumes de dados todos os dias.",
+              "Profissionais dessa área transformam essas informações em conhecimento útil para apoiar decisões e criar soluções inteligentes.",
+              "Cursos relacionados:\n- Ciência de Dados;\n- Engenharia de Dados;\n- Inteligência Artificial;\n- Big Data.",
+              "### **Cibersegurança**",
+              "Responsável pela proteção de sistemas, redes e informações contra ataques digitais.",
+              "Cursos relacionados:\n- Segurança da Informação;\n- Cibersegurança;\n- Engenharia de Segurança Digital.",
+              "### **Computação em Nuvem (Cloud Computing)**",
+              "Área responsável pela infraestrutura que permite o funcionamento de aplicações e serviços digitais em larga escala.",
+              "Cursos relacionados:\n- Arquitetura de Soluções em Nuvem;\n- Infraestrutura de TI;\n- Engenharia Cloud.",
+              "### **Redes e Infraestrutura**",
+              "Cuida da comunicação entre sistemas, dispositivos e ambientes digitais.",
+              "Cursos relacionados:\n- Redes de Computadores;\n- Administração de Redes;\n- Infraestrutura de TI.",
+              "## **Onde entram as Engenharias Tech?**",
+              "Entre as diferentes possibilidades de formação, as engenharias tech merecem atenção especial.",
+              "Elas reúnem cursos como Engenharia de Software, Engenharia de Dados, Engenharia de Redes, Engenharia de Inteligência Artificial, Engenharia de Cibersegurança e Engenharia de Computação e têm como diferencial a aplicação de princípios de engenharia à tecnologia.",
+              "Isso significa desenvolver soluções com foco em planejamento, arquitetura, escalabilidade, segurança e evolução contínua.",
+              "Quando algumas formações ensinam a utilizar tecnologias específicas, as Engenharias Tech buscam preparar profissionais para compreender e construir os sistemas que sustentam a transformação digital.",
+              "## **A IA substitui quem trabalha com tecnologia?**",
+              "Em muitos casos, a inteligência artificial automatiza tarefas operacionais e aumenta a produtividade.",
+              "No entanto, ela não substitui profissionais responsáveis por:\n- Definir estratégias tecnológicas;\n- Projetar sistemas;\n- Garantir segurança digital;\n- Integrar diferentes tecnologias;\n- Resolver problemas complexos;\n- Desenvolver novas soluções.",
+              "Na prática, a IA funciona como uma ferramenta poderosa, mas continua dependendo de pessoas qualificadas para ser implementada, supervisionada e aprimorada.",
+              "## **Conclusão**",
+              "Ao perguntar **para que serve o curso de informática**, é importante olhar além das tarefas que a inteligência artificial consegue executar atualmente.",
+              "Os cursos modernos formam profissionais capazes de criar, gerenciar, proteger e evoluir as tecnologias que sustentam empresas, plataformas digitais e as próprias soluções de IA."
+            ]
+          },
+          {
+            id: 11,
+            title: "11. Qual a grade curricular de tecnologia da informação — e por que os fundamentos ganharam importância",
+            pageRange: "Págs 37-40",
+            content: [
+              "## **Qual a grade curricular de tecnologia da informação — e por que os fundamentos ganharam importância**",
+              "Ao pesquisar sobre a grade curricular de **tecnologia da informação**, muitas pessoas esperam encontrar uma lista única de disciplinas. Na prática, porém, isso não acontece. A área de Tecnologia da Informação (**TI**) reúne diferentes especializações, e cada curso possui uma grade curricular voltada para objetivos profissionais específicos.",
+              "Apesar dessas diferenças, existe uma base comum que aparece em grande parte das formações. Lógica, programação, dados, redes, segurança e arquitetura de sistemas continuam sendo conhecimentos fundamentais para quem deseja trabalhar com tecnologia.",
+              "Esses fundamentos se tornaram ainda mais importantes com o avanço da inteligência artificial. Afinal, as ferramentas podem automatizar tarefas, mas os profissionais precisam compreender a estrutura por trás dos sistemas para tomar decisões, resolver problemas e desenvolver novas soluções.",
+              "## **Quais são as matérias de TI mais comuns?**",
+              "Independentemente da área escolhida, a **tecnologia da informação grade curricular** costuma começar pelos fundamentos da computação.",
+              "Entre as disciplinas mais frequentes estão:\n- **Lógica de programação** (Ensina a organizar o raciocínio para resolver problemas utilizando código e algoritmos);\n- **Algoritmos e estruturas de dados** (Apresenta métodos para criar soluções eficientes e organizar informações de forma adequada);\n- **Banco de dados** (Mostra como armazenar, consultar e gerenciar informações utilizadas por sistemas e aplicações);\n- **Redes de computadores** (Explica como dispositivos, servidores e sistemas se comunicam em ambientes digitais);\n- **Segurança da informação** (Introduz conceitos relacionados à proteção de dados, controle de acesso e prevenção de riscos);\n- **Engenharia de software** (Aborda planejamento, desenvolvimento, testes e manutenção de sistemas);\n- **Sistemas operacionais** (Estuda os recursos responsáveis pelo funcionamento de computadores, servidores e dispositivos digitais);\n- **Computação em nuvem** (Apresenta tecnologias utilizadas para disponibilizar aplicações e serviços em ambientes distribuídos).",
+              "Cada **matéria de TI** contribui para a construção de uma base sólida, permitindo que o estudante compreenda como diferentes componentes tecnológicos funcionam em conjunto.",
+              "## **O que estuda tecnologia da informação em cada área?**",
+              "Ao pesquisar **o que estuda tecnologia da informação**, é importante entender que a resposta depende da especialização escolhida.",
+              "### **Desenvolvimento de software**",
+              "Cursos como Engenharia de Software, Sistemas de Informação e Análise e Desenvolvimento de Sistemas focam na criação de aplicações e plataformas digitais.",
+              "As disciplinas costumam incluir:\n- Programação;\n- Arquitetura de software;\n- Testes de sistemas;\n- Banco de dados;\n- Gestão de projetos;\n- Experiência do usuário.",
+              "É uma área indicada para quem gosta de construir produtos digitais e resolver problemas por meio do desenvolvimento de sistemas.",
+              "### **Dados e inteligência artificial**",
+              "Cursos ligados à Ciência de Dados, Engenharia de Dados e Inteligência Artificial aprofundam o estudo de informações e modelos analíticos.",
+              "Entre os principais conteúdos estão:\n- Estatística;\n- Banco de dados;\n- Machine Learning;\n- Visualização de dados;\n- Modelagem preditiva;\n- Programação aplicada a dados.",
+              "O objetivo é transformar grandes volumes de informações em conhecimento para apoiar decisões e automatizações.",
+              "### **Cibersegurança**",
+              "Voltada para the protection of systems and data, this field covers:\n- Segurança de redes;\n- Criptografia;\n- Gestão de riscos;\n- Proteção de dados;\n- Monitoramento de ameaças;\n- Resposta a incidentes.",
+              "A crescente digitalização das empresas torna essa especialização cada vez mais estratégica.",
+              "### **Cloud Computing, redes e infraestrutura**",
+              "Cursos focados em infraestrutura tecnológica abordam temas como:\n- Arquitetura em nuvem;\n- Redes corporativas;\n- Virtualização;\n- Administração de servidores;\n- Monitoramento de ambientes digitais.",
+              "Esses profissionais são responsáveis por garantir que sistemas e serviços funcionem de forma estável e escalável.",
+              "## **Onde entram as Engenharias Tech?**",
+              "As engenharias tech se destacam por combinar os fundamentos tradicionais da computação com princípios de engenharia aplicados à tecnologia.",
+              "Formações como Engenharia de Software, Engenharia de Computação, Engenharia de Dados, Engenharia de Redes, Engenharia de Inteligência Artificial e Engenharia de Cibersegurança aprofundam temas relacionados a:\n- Projeto de sistemas;\n- Arquitetura tecnológica;\n- Modelagem de soluções;\n- Análise de riscos;\n- Escalabilidade;\n- Governança tecnológica.",
+              "Por isso, além das disciplinas técnicas, estas formações costumam desenvolver uma visão mais ampla sobre como construir, integrar e evoluir sistemas complexos.",
+              "## **Curso de TI: o que estuda quem deseja trabalhar com tecnologia?**",
+              "A resposta para **curso de TI o que estuda** depende diretamente dos objetivos de carreira.",
+              "Quem deseja atuar com desenvolvimento de software terá maior contato com programação e arquitetura de sistemas. Já profissionais interessados em inteligência artificial estudarão mais estatística, dados e modelos computacionais.",
+              "Da mesma forma, quem pretende trabalhar com segurança digital aprofundará conhecimentos sobre redes, vulnerabilidades e proteção de informações.",
+              "Independentemente da especialização, existe um ponto em comum: compreender os fundamentos da tecnologia continua sendo essencial para acompanhar as mudanças do mercado e utilizar ferramentas como a inteligência artificial de forma estratégica.",
+              "## **Conclusão**",
+              "A **tecnologia da informação grade curricular** varia de acordo com a área escolhida, mas todas as formações compartilham uma base importante de conhecimentos técnicos e analíticos.",
+              "Mais do que aprender ferramentas específicas, os cursos de TI ajudam a desenvolver a capacidade de compreender sistemas, resolver problemas e construir soluções tecnológicas para differentes contextos."
+            ]
+          },
+          {
+            id: 12,
+            title: "12. Mercado de trabalho TI: o que mudou nas carreiras de tecnologia?",
+            pageRange: "Págs 41-42",
+            content: [
+              "## **Mercado de trabalho TI: o que mudou nas carreiras de tecnologia?**",
+              "O mercado de trabalho TI não está diminuindo, mas ficou mais exigente. Com inteligência artificial, automação e nuvem, tarefas repetitivas passaram a ser executadas por sistemas. Ao mesmo tempo, cresce a busca por profissionais capazes de projetar soluções, integrar tecnologias, proteger dados e sustentar produtos digitais. É nesse ponto que formações ligadas às engenharias tech ganham relevância: elas ajudam o profissional a construir tecnologia, não apenas operar ferramentas.",
+              "## **Como está o mercado de trabalho de TI atualmente?**",
+              "O setor segue gerando oportunidades, mas o perfil das vagas mudou. Segundo projeções da Brasscom, o macrossetor de TIC poderia gerar entre 30 mil e 147 mil empregos formais no Brasil em 2025, sendo 57% dessa oportunidades diretamente ligadas à tecnologia.",
+              "A própria Brasscom aponta descasamento entre demanda e oferta de talentos nos últimos anos. Existem vagas, mas muitas exigem base técnica mais sólida do que funções operacionais pediam. A virada está aí: o mercado busca quem saiba lidar com sistemas complexos, nuvem, dados, segurança e automação.",
+              "## **Por que a operação perde espaço?**",
+              "Suporte básico, configuração de ambientes simples, monitoramento rotineiro, relatórios e atendimento técnico de baixa complexidade continuam existindo, mas muitas dessas atividades já são apoiadas ou substituídas por ferramentas automatizadas. Plataformas de nuvem simplificam configurações, sistemas de monitoramento emitem alertas e ferramentas de IA aceleram rotinas.",
+              "Isso não torna o profissional de TI desnecessário. O valor migra para quem entende o problema, desenha a solução, avalia riscos, integra sistemas e garante que a tecnologia funcione com segurança e escala.",
+              "## **Demandas do mercado de trabalho de tecnologia da informação**",
+              "O mercado de trabalho tecnologia da informação valoriza profissionais capazes de atuar em áreas estruturais. Relatórios como o Future of Jobs 2025, do Fórum Econômico Mundial, apontam crescimento de funções ligadas a big data, inteligência artificial, desenvolvimento de software e cibersegurança.",
+              "Em dados e IA, empresas precisam organizar informação, criar modelos e transformar dados em decisões. Em cloud e infraestrutura, o foco é projetar ambientes estáveis, seguros e preparados para crescer. Em cibersegurança, o trabalho envolve prevenção de ataques, monitoramento de riscos, resposta a incidentes e políticas de proteção.",
+              "Na engenharia de software, mesmo com IA capaz de gerar código, o papel humano segue essencial. Criar sistemas confiáveis envolve arquitetura, testes, documentação, manutenção, segurança e visão de produto. O foco não é apenas programar, mas construir soluções digitais consistentes.",
+              "## **Quem tem curso de informática pode trabalhar em quê?**",
+              "A resposta para essa pergunta depende do tipo de curso. Formações básicas podem abrir portas para suporte técnico, atendimento ao usuário, rotinas administrativas com tecnologia e operation of systems.",
+              "Cursos mais aprofundados, como graduações e formações voltadas à engenharia, ampliam as possibilidades para áreas como software, dados, cloud, segurança, inteligência artificial e arquitetura de sistemas. Por isso, quem se pergunta “tenho curso de informática, onde posso trabalhar?” deve considerar o nível da formação e a profundidade dos fundamentos estudados.",
+              "## **Para trabalhar com TI precisa de faculdade?**",
+              "Não necessariamente. Algumas pessoas entram na área por cursos livres, certificações, projetos próprios e experiência prática. Porém, para funções complexas, a faculdade de TI costuma oferecer vantagens: ajuda a desenvolver pensamento lógico, visão sistêmica, resolução de problemas e fundamentos que seguem úteis quando ferramentas mudam.",
+              "A tecnologia muda rápido, mas fundamentos como arquitetura, dados, segurança, redes, programação e engenharia de software acompanham o profissional por mais tempo.",
+              "## **Conclusão**",
+              "O mercado de trabalho TI não está desaparecendo. Ele depende menos de tarefas operacionais e valoriza mais quem consegue criar, integrar, proteger e evoluir sistemas complexos.",
+              "Para construir uma carreira mais resistente às mudanças, o caminho passa por desenvolver base técnica sólida e entender quais áreas seguem crescendo com automação, IA e nuvem."
+            ]
+          },
+          {
+            id: 13,
+            title: "13. Sistemas de TI: por que as equipes estão mudando?",
+            pageRange: "Págs 43-44",
+            content: [
+              "## **Sistemas de TI: por que as equipes estão mudando?**",
+              "Sistemas de TI vão além de programas instalados em um computador. Um sistema de informação reuni pessoas, dados, processos, softwares e infraestrutura para vender, atender, registrar, analisar, controlar ou tomar decisões. Com automação, IA e plataformas integradas, operar ferramentas prontas já não basta. Cresce a demanda por profissionais capazes de entender a estrutura por trás desses sistemas — uma base próxima do que formações ligadas às engenharias tech desenvolvem.",
+              "## **O que é um sistema de tecnologia da informação?**",
+              "Um sistema de tecnologia da informação é um conjunto organizado de recursos usado para coletar, processar, armazenar e distribuir informações. Pode ser um aplicativo de banco, uma plataforma de vendas, um prontuário eletrônico, um sistema de estoque ou o software que acompanha pedidos e pagamentos.",
+              "Ele não funciona isolado. Precisa conversar com a rotina da organização, com outros sistemas e com as pessoas que usam a solução. Em um e-commerce, a tela de compra depende de estoque, pagamento, entrega, atendimento, segurança e relatórios.",
+              "## **O que faz um sistema funcionar bem?**",
+              "Bons sistemas precisam de dados organizados, processos claros, integração, segurança e escalabilidade. Os dados garantem informações confiáveis; os processos evitam ruído. A integração conecta plataformas de pagamento, ERPs, CRMs, ferramentas de atendimento, bancos de dados e sistemas externos.",
+              "Um sistema também precisa proteger informações sensíveis e continuar funcionando quando aumentam usuários, transações ou acessos simultâneos. Por isso, não basta “manter o sistema no ar”: é preciso entender como foi construído, quais riscos existem e como pode evoluir.",
+              "## **Por que as equipes de sistemas estão encolheng?**",
+              "Durante muito tempo, equipes de TI eram grandes porque havia trabalho manual: criar acessos, gerar relatórios, configurar rotinas, acompanhar chamados e corrigir problemas repetitivos.",
+              "Hoje, parte disso pode ser automatizada por ferramentas de gestão, nuvem e inteligência artificial. Isso não reduz a importância dos sistemas. Pelo contrário: quanto mais automatizado o ambiente, maior o cuidado com arquitetura, dados, segurança e integration.",
+              "A mudança está no perfil valorizado. As empresas seguem precisando de profissionais técnicos, mas buscam pessoas capazes de enxergar o sistema por inteiro, conectar áreas e propor soluções além de ajustes pontuais.",
+              "## **Quais são os principais tipos de sistemas de informação?**",
+              "Existem vários tipos de sistemas de informação. Os transacionais registram vendas, pagamentos, pedidos e cadastros. Os gerenciais organizam dados para apoiar decisões e acompanhar indicadores, produtividade, receita, estoque ou desempenho.",
+              "Os systems of decision support use data and analysis to compare scenarios, predict demands, identify risks and guide strategic choices. Integrados, como ERPs, connect financial, purchases, stock, sales and support in a unified flow.",
+              "## **O que estudar para trabalhar com sistemas de informação?**",
+              "Quem quer atuar com sistemas precisa de uma base que combine tecnologia, processos e visão de negócio. Em cursos da área, aparecem lógica de programação, banco de dados, engenharia de software, redes, segurança, requisitos, arquitetura, gestão de projetos e dados.",
+              "Mais importante do que decorar ferramentas é entender como essas peças se conectam. Um sistema de vendas precisa armazenar dados, processar pagamentos, controlar acessos, gerar relatórios e funcionar bem em horários de pico.",
+              "Ao pesquisar “o que estudar para sistemas de informação”, vale observar se a formação vai além do uso de ferramentas e trabalha fundamentos que sustentam soluções complexas.",
+              "## **Que tipo de formação ajuda nessa área?**",
+              "Formações ligadas às engenharias tech ajuda por desenvolver uma visão estrutural da tecnologia. Em vez de focar apenas na operação de sistemas prontos, trabalham construção, evolução e governança de soluções digitais, incluindo engenharia de software, dados, nuvem, cibersegurança, inteligência artificial e arquitetura de sistemas.",
+              "Para atuar com sistemas de TI, essa base faz diferença porque o mercado tende a exigir menos execução repetitiva e mais capacidade de projetar soluções confiáveis, integradas e preparadas para crescer.",
+              "## **Conclusão**",
+              "As equipes de sistemas estão mudando porque a tecnologia ficou mais complexa. Tarefas repetitivas perdem espaço, mas os sistemas de informação continuam no centro das empresas.",
+              "Ganha força o profissional que entende dados, processos, segurança, integração e arquitetura, não apenas quem resolve chamados ou opera ferramentas."
+            ]
+          },
+          {
+            id: 14,
+            title: "14. Faculdade de TI: quanto dá para ganhar na área?",
+            pageRange: "Págs 45-46",
+            content: [
+              "## **Faculdade de TI: quanto dá para ganhar na área?**",
+              "Quem pensa em fazer uma faculdade de TI costuma querer saber se o investimento pode virar uma boa carreira. A resposta depende do caminho: suporte, desenvolvimento, dados, cloud, segurança, arquitetura e liderança têm faixas diferentes. A formação ajuda a abrir portas, mas os melhores salários aparecem quando vem com prática, especialização e domínio de fundamentos — base valorizada nas engenharias tech.",
+              "## **O que influencia o salário em TI?**",
+              "A remuneração em tecnologia varia porque a área é ampla. Duas pessoas formadas em cursos parecidos podem ganhar valores diferentes se atuarem em níveis, empresas ou especialidades distintas.",
+              "Entre os fatores que pesam estão:\n- Experiência;\n- Área de atuação;\n- Porte da empresa;\n- Modelo de contratação;\n- Inglês;\n- Certificações;\n- Portfólio;\n- Capacidade de resolver problemas complexos.",
+              "No início, é comum começar em funções operacionais ou supervisionadas. Com o tempo, o profissional pode avançar para posições plenas, seniores, especialistas ou de liderança. Quanto maior a responsabilidade técnica, maior o impacto no negócio.",
+              "A faculdade não é promessa automática de salário alto. Funciona melhor como base para construir repertório, entender sistemas e crescer em áreas complexas.",
+              "## **Quanto ganham alguns cargos de TI no Brasil?**",
+              "As faixas mudam conforme fonte, cidade, empresa e momento do mercado. Ainda assim, levantamentos como o Guia Salarial da Robert Half ajudam como referência.",
+              "Nas projeções para 2026, cargos técnicos e seniores aparecem com faixas competitivas. **Desenvolvedor Full-Stack Sênior** aparece entre R$ 12.450 e R$ 20.950. Para **Arquiteto de Software**, a faixa vai de R$ 15.450 a R$ 25.900. **Especialista ou Cientista de Dados** aparece entre R$ 14.700 e R$ 24.600.",
+              "Em posições de entrada ou meio de carreira, o mesmo levantamento lista **Desenvolvedor Mobile Júnior** entre R$ 6.050 e R$ 8.750, enquanto **Analista de Negócios** aparece entre R$ 8.000 e R$ 12.100.",
+              "Esses números não são garantia, mas indicam uma tendência: as maiores faixas costumam estar em funções que exigem profundidade técnica, visão de sistemas e decisões sobre produtos, dados, infraestrutura ou segurança.",
+              "## **E quanto ganha um engenheiro de TI?**",
+              "“Engenheiro de TI” pode significar engenharia de software, dados, cloud, segurança, inteligência artificial, arquitetura ou infraestrutura. O ponto em comum é o envolvimento com decisões estruturais.",
+              "Um engenheiro de software não apenas escreve código; pensa em arquitetura, testes, manutenção, desempenho e evolução. Um engenheiro de dados organiza fluxos, bancos, qualidade da informação e integração. Já um profissional de cloud lida com disponibilidade, custo, segurança e escalabilidade.",
+              "Salários em áreas de engenharia aplicada à tecnologia tendem a crescer quando o profissional deixa de operar ferramentas e passa a projetar soluções. Quanto maior o impacto técnico no negócio, maior tende a ser a valorização.",
+              "## **Como os salários se comparam ao mercado internacional?**",
+              "O mercado internacional pode pagar mais, mas país, custo de vida, impostos, moeda, contrato e experiência mudam a comparação.",
+              "Nos Estados Unidos, o Bureau of Labor Statistics registrou, em maio de 2024, salário anual mediano de US$ 133.080 para desenvolvedores de software. Para analistas e testadores de qualidade de software, a mediana foi de US$ 102.610.",
+              "Esses dados mostram que tecnologia é valorizada em mercados maduros, mas não garantem acesso a esse padrão. Para competir fora, pesam inglês, experiência prática, portfólio e senioridade.",
+              "## **TI ainda vale a pena como profissão?**",
+              "Sim, especialmente para quem não fica na superfície. Atividades repetitivas tendem a ser automatizadas ou absorvidas por ferramentas mais simples. Em compensação, cresce a demanda por profissionais que entendem arquitetura, dados, software, segurança, cloud e inteligência artificial.",
+              "Nesse cenário, formações conectadas às engenharias tech ajudam porque desenvolvem uma base estrutural. O objetivo não é aprender apenas a ferramenta da vez, mas entender como a tecnologia é construída, integrada, protegida e melhorada.",
+              "## **Conclusão**",
+              "Não existe um único salário para quem faz faculdade de TI. O retorno depende da área escolhida, da experiência e da profundidade técnica desenvolvida.",
+              "As melhores oportunidades tendem a aparecer em caminhos com mais responsabilidade sobre sistemas, dados, software, infraestrutura, segurança e decisões técnicas. Mais importante do que buscar uma resposta fechada é entender quais formações e especializações ajudam a chegar a essas posições."
+            ]
+          },
+          {
+            id: 15,
+            title: "15. Estudar TI: como começar do jeito certo e focar no futuro",
+            pageRange: "Págs 47-49",
+            content: [
+              "## **Estudar TI: como começar do jeito certo e focar no futuro**",
+              "Começar a estudar TI não é baixar qualquer curso de programação nem tentar aprender todas as ferramentas ao mesmo tempo. O melhor caminho é entender como a tecnologia se divide, quais fundamentos sustentam a área e que carreira você quer construir. Com IA, automação e sistemas mais complexos, ganha espaço quem aprende a criar, integrar, proteger e melhorar tecnologia — mesma lógica das engenharias tech.",
+              "## **Antes da primeira linguagem, entenda a base**",
+              "É comum querer começar por uma linguagem famosa, um curso rápido ou uma ferramenta em alta. Isso pode ajudar, mas não deve ser o ponto de partida.",
+              "Antes de escolher uma tecnologia, vale entender fundamentos presentes em quase toda carreira de TI. **Lógica de programação** ajuda a resolver problemas em etapas. **Algoritmos** transformam ideias em instruções. **Banco de dados** mostra como informações são armazenadas, consultadas e relacionadas. **Redes** explicam como sistemas se comunicam. **Segurança** ensina a proteger dados, acessos e aplicações.",
+              "Esses conhecimentos continuam úteis quando ferramentas mudam. Quem aprende apenas um software pode ficar preso a ele. Quem entende fundamentos troca de tecnologia com mais facilidade.",
+              "## **Como escolher uma área para seguir?**",
+              "Depois da base, explore as áreas da tecnologia. Isso evita escolher só por moda, salário ou promessa de “emprego rápido”.",
+              "**Desenvolvimento de software** é o caminho de quem gosta de construir sites, aplicativos, plataformas e sistemas internos. **Dados e inteligência artificial** fazem sentido para quem prefere encontrar padrões, organizar informações e apoiar decisões.",
+              "**Cloud e infraestrutura** interessam a quem quer atuar nos bastidores, rodando aplicações, armazenando dados e escalando serviços pela internet. **Cibersegurança** é uma trilha para quem se interessa por proteção, investigação e risco, defendendo sistemas, redes e informações contra ataques, vazamentos e falhas.",
+              "Também há caminhos em engenharia de software e arquitetura de sistemas. Aqui, o foco vai além de programar:\n- Envolve estrutura da solução;\n- Escalabilidade;\n- Manutenção;\n- Qualidade;\n- Evolução.",
+              "## **Por que especialização importa tanto?**",
+              "A tecnologia muda rápido. Ferramentas aparecem, crescem e podem perder espaço em poucos anos. Tentar acompanhar tudo ao mesmo tempo costuma gerar ansiedade e pouco avanço.",
+              "A especialização dá direção. Primeiro vem a base, depois a escolha de uma área e, aos poucos, o aprofundamento nas competências importantes.",
+              "Com a IA, isso ficou mais relevante. Ferramentas já geram código, resumem documentos, montam consultas simples e automatizam tarefas repetitivas. Quem depende apenas de tarefas mecânicas fica mais exposto. Quem entende sistemas, dados, segurança, arquitetura e contexto de negócio usa a IA para produzir melhor.",
+              "## **Curso livre, faculdade e prática: como combinar?**",
+              "Quem pesquisa como estudar TI encontra cursos livres, graduação, bootcamps, certificações, vídeos, comunidades, documentação e projetos. O erro é tratá-los como concorrentes.",
+              "Cursos livres ajudam a aprender uma ferramenta ou testar uma área. Uma formação estruturada, como graduação, organiza o aprendizado ao conectar fundamentos, projetos, teoria e prática.",
+              "A prática fecha o ciclo. Projetos pessoais, desafios, portfólio e experiências reais mostram se você consegue aplicar o que aprendeu. Um projeto simples pode ensinar mais do que horas acumulando aulas sem colocar nada em uso.",
+              "## **Como escolher onde estudar?**",
+              "A escolha não deve depender só de promessa de empregabilidade, preço ou propaganda. Veja se o curso é reconhecido ou autorizado em canais oficiais, como o e-MEC. Analise a grade e procure equilíbrio entre fundamentos, prática e atualização.",
+              "Observe também se há projetos aplicados, professores com experiência e conexão com software, dados, IA, cloud, segurança e arquitetura. Desconfie de atalhos: construir uma carreira forte exige tempo, prática e repertório.",
+              "Formações ligadas às engenharias tech podem fazer sentido para quem busca base estrutural. Elas tendem a valorizar não só o uso de ferramentas, mas a construção de soluções: como sistemas são planejados, integrados, protegidos, testados e melhorados.",
+              "## **Recursos para estudar com mais direção**",
+              "Para evoluir sem se perder, escolha uma trilha por vez. Tentar aprender programação, dados, cloud, segurança e IA simultaneamente cria sensação de movimento, mas pouco progresso real.",
+              "Use documentações oficiais, acompanhe comunidades e fóruns técnicos, mas filtre o excesso. Crie projetos pequenos antes de dominar tudo: eles obrigam você a decidir, errar, pesquisar, corrigir e entender a tecnologia fora da teoria. Registrar conceitos e aprendizados ajuda a consolidar conhecimento e montar portfólio.",
+              "## **Conclusão**",
+              "O melhor jeito de estudar TI é fugir da pressa de aprender só a ferramenta da moda. Comece pelos fundamentos, explore as áreas, escolha uma direção e pratique com constância.",
+              "A tecnologia muda, mas bases como lógica, dados, segurança, redes, arquitetura and engineering of software remain highly valuable."
+            ]
+          },
+          {
+            id: 16,
+            title: "16. Como a IA está redefinindo o papel do profissional tech",
+            pageRange: "Págs 50-51",
+            content: [
+              "## **Como a IA está redefinindo o papel do profissional tech**",
+              "A inteligência artificial já faz parte da rotina de tecnologia. Ela sugere código, automatiza testes, resume documentos, analisa dados e acelera tarefas. Mas a principal mudança está no valor que o profissional tech precisa entregar. Quanto mais a IA assume a execução repetitiva, mais importa interpretar problemas, validar decisões, integrar sistemas e construir soluções confiáveis — lógica conectada às engenharias tech.",
+              "## **O que muda no trabalho em tecnologia?**",
+              "A IA reduz o tempo gasto em tarefas pequenas e previsíveis: sugerir funções, organizar dados, criar testes e automatizar respostas iniciais.",
+              "Isso muda a rotina, mas não elimina conhecimento técnico. Quanto mais fácil fica gerar uma resposta, mais importante é avaliar se ela faz sentido. Um código pode funcionar em teste simples e falhar na arquitetura real. Uma análise automática pode usar dados incompleto. Uma recomendação pode acelerar o trabalho e criar riscos de segurança, privacidade ou manutenção.",
+              "Por isso, o foco deixa de ser executar tudo manualmente e passa a ser orientar, revisar, integrar e decidir com responsabilidade.",
+              "## **Por que a IA aumenta o valor das Engenharias Tech?**",
+              "Soluções com IA dependem de base bem construída. Não basta conectar uma ferramenta pronta: é preciso ter dados organizados, infraestrutura confiável, segurança, integração e clareza sobre o problema.",
+              "É aqui que entram as Engenharias Tech. Se a IA acelera a execução, cresce o valor de quem entende a estrutura por trás della tecnologia. Em software, alguém precisa pensar arquitetura, qualidade, testes e manutenção. Em dados, modelos só funcionam bem com informações confiáveis. Em cloud, aplicações inteligentes exigem infraestrutura. Em cibersegurança, automações ampliam riscos.",
+              "A tecnologia com IA aumenta a exigência sobre quem projeta, valida e sustenta soluções.",
+              "## **Competências que ganham força na era da IA**",
+              "Pensamento crítico é essencial. A IA responde rápido, mas rapidez não é qualidade. O profissional precisa testar, comparar e identificar sugestões frágeis.",
+              "Domínio de dados também pesa. Muitas aplicações de IA dependem da qualidade das informações usadas. Entender banco de dados, tratamento, análise e governança evita decisões baseadas em dados ruins.",
+              "Outra competência é visão de arquitetura: entender como sistemas, ferramentas, dados e usuários se conectam. Sem isso, uma solução pode funcionar isolada e gerar problemas ao escalar, integrar ou receber manutenção.",
+              "Segurança se torna central. Quanto mais IA entra nos sistemas, maior a atenção com privacidade, acesso, vazamentos, uso responsável de informações e automações mal configuradas. Comunicação técnica completa essa base: é preciso explicar limites, riscos e decisões.",
+              "## **Onde surgem oportunidades de carreira?**",
+              "As oportunidades aparecem onde a IA precisa ser construída, integrada, supervisionada ou usada com responsabilidade.",
+              "Em Engenharia de Software, há espaço para quem usa IA sem abrir mão de qualidade e manutenção. Em Engenharia de Dados, cresce a demanda por bases confiáveis. Em cloud, surgem desafios de desempenho, custo, escalabilidade e infraestrutura. Em cibersegurança, a IA ajuda a identificar ameaças, mas amplia riscos.",
+              "Também crescem frentes de automação, arquitetura de soluções, integração entre sistemas e governança de IA: regras, responsabilidades e limites para uso seguro.",
+              "## **A IA vai substituir o profissional de tecnologia?**",
+              "A pergunta mais útil é quais tarefas a IA tende a absorver. Atividades repetitivas e pouco conectadas ao contexto são mais automatizáveis. Decisões sobre arquitetura, segurança, dados, experiência do usuário e responsabilidade técnica continuam exigindo julgamento humano.",
+              "Não basta “usar IA” para se manter relevante. Quem entende sistemas, dados, segurança and arquitetura usa a IA como ferramenta. Quem depende apenas de comandos prontos fica vulnerável.",
+              "## **Conclusão**",
+              "A IA não elimina o profissional tech. Ela redefine seu papel:\n- O trabalho fica menos centrado na execução repetitiva;\n- Fica mais ligado à capacidade de analisar, projetar, validar e evoluir soluções.",
+              "Para crescer, é preciso desenvolver base sólida e usar inteligência artificial com critério. As melhores oportunidades tendem a surgir para quem combina domínio técnico, visão sistêmica e responsabilidade."
+            ]
+          },
+          {
+            id: 17,
+            title: "17. Áreas de atuação em Sistemas de Informação: onde trabalhar na era da IA?",
+            pageRange: "Págs 52-54",
+            content: [
+              "## **Áreas de atuação em Sistemas de Informação: onde trabalhar na era da IA?**",
+              "Sistemas de Informação é uma formação ampla para quem quer atuar entre tecnologia, processos e negócios. Em vez de preparar o profissional para uma única função, SI abre caminhos em análise de sistemas, desenvolvimento, dados, projetos, segurança, infraestrutura e outras áreas. Com a inteligência artificial ganhando espaço nas empresas, essa capacidade de entender problemas reais e traduzi-los em soluções digitais ficou ainda mais valiosa — especialmente para quem deseja, com o tempo, avançar para áreas mais técnicas ligadas às engenharias tech.",
+              "## **O que faz um profissional de Sistemas de Informação?**",
+              "Quem trabalha com Sistemas de Informação ajuda empresas a usar tecnologia para resolver problemas. Isso pode envolver entender processos, levantar necessidades, participar da criação de sistemas, organizar dados, integrar ferramentas e apoiar decisões.",
+              "Pense em uma loja virtual. Para a compra acontecer sem ruído, é preciso conectar cadastro de produtos, pagamento, estoque, logística, atendimento, segurança e relatórios. O profissional de SI pode atuar justamente nessa ponte entre o que o negócio precisa e o que a tecnologia deve entregar.",
+              "Por isso, essa formação não se limita a “mexer em computador”. Ela desenvolve uma visão prática sobre como sistemas, pessoas e processos podem funcionar melhor juntos.",
+              "## **Principais áreas de atuação em Sistemas de Informação**",
+              "As possibilidades de carreira dependem da formação, dos projetos, dos estágios e das especializações escolhidas. Entre os caminhos mais comuns estão:\n- **Análise de sistemas** (O profissional entende necessidades da empresa e transforma essas demandas em requisitos para uma solução. É uma área para quem gosta de conversar com equipes, organizar informações e propor melhorias);\n- **Desenvolvimento de software** (Envolve a criação de sistemas, sites, aplicativos e plataformas. Com experiência, esse caminho pode evoluir para Engenharia de Software, com foco em sistemas mais robustos e escaláveis);\n- **Dados e análise de informações** (Aqui, o profissional trabalha com bancos de dados, relatórios, indicadores e apoio à tomada de decisão. Depois, pode se aprofundar em Engenharia de Dados, Ciência de Dados ou inteligência artificial);\n- **Gestão de projetos de tecnologia** (Essa trilha envolve acompanhar prazos, prioridades, equipes e entregas. Combina com quem gosta de coordenação, organização e visão geral);\n- **Segurança da informação** (Cuida da proteção de dados, acessos e sistemas. Com especialização, pode se aproximar de cibersegurança);\n- **Infraestrutura e cloud** (Envolve redes, servidores e ambientes que sustentam sistemas. Cloud, ou computação em nuvem, permite rodar aplicações e armazenar dados em servidores acessados pela internet).",
+              "## **Como a IA muda essas possibilidades?**",
+              "A inteligência artificial automatiza tarefas, mas também aumenta a necessidade de profissionais capazes de validar, conectar e orientar soluções.",
+              "Um relatório pode ser gerado automaticamente, mas alguém precisa avaliar se os dados fazem sentido. Uma ferramenta pode sugerir uma automação, mas alguém precisa entender o processo antes de aplicá-la. Um sistema pode usar IA para recomendar decisões, mas a empresa ainda precisa avaliar riscos, privacidade e impacto no negócio.",
+              "Para quem vem de Sistemas de Informação, isso reforça uma vantagem da área: a capacidade de transitar entre linguagem técnica e necessidade prática.",
+              "## **Quem se forma em Sistemas de Informação pode atuar em quê?**",
+              "Quem se forma em Sistemas de Informação não fica limitado a um único cargo. Dependendo da trajetória, pode atuar como analista de sistemas, desenvolvedor, analista de dados, gestor de projetos, consultor de tecnologia, profissional de infraestrutura ou especialista em segurança.",
+              "O diploma oferece uma base. A carreira vai sendo construída com projetos, estágio, experiência prática, cursos complementares e escolhas de especialização.",
+              "## **O que estudar para trabalhar com SI?**",
+              "Para trabalhar com Sistemas de Informação, vale construir uma base em lógica de programação, banco de dados, redes, sistemas operacionais, segurança da informação, análise de requisitos, engenharia de software e gestão de projetos.",
+              "Também é importante desenvolver comunicação. O profissional de SI muitas vezes atua entre áreas técnicas e áreas de negócio, então precisa explicar problemas, organizar demandas e traduzir necessidades com clareza.",
+              "Com o avanço da carreira, especializações em software, dados, cloud, segurança e IA podem fortalecer a trajetória. Essas áreas se aproximam das engenharias tech porque envolvem construção, integração e evolução de soluções mais complexas.",
+              "## **Conclusão**",
+              "Sistemas de Informação é uma porta de entrada ampla para tecnologia. A formação permite entender sistemas, processos e negócios, abrindo caminho para diferentes áreas de atuação.",
+              "Na era da IA, essa versatilidade continua valiosa. As ferramentas mudam, mas empresas ainda precisam de profissionais capazes de entender problemas, conectar soluções, organizar dados e avaliar riscos."
+            ]
+          },
+          {
+            id: 18,
+            title: "18. Carreira em TI: como chegar a um nível mais estratégico?",
+            pageRange: "Págs 55-56",
+            content: [
+              "## **Carreira em TI: como chegar a um nível mais estratégico?**",
+              "Construir uma carreira em TI de alto nível não é aprender uma ferramenta nova a cada mês. Com a inteligência artificial automatizando tarefas básicas, o diferencial passa a estar em outro lugar: entender sistemas, dados, segurança, cloud e software com profundidade suficiente para tomar boas decisões. É essa visão estrutural que aproxima o profissional das engenharias tech, um caminho para quem quer deixar de apenas operar tecnologia e passar a construir soluções mais complexas.",
+              "## **Comece escolhendo uma direção**",
+              "TI é uma área ampla. Dá para trabalhar com desenvolvimento de software, dados, inteligência artificial, cibersegurança, infraestrutura, cloud, arquitetura de sistemas e várias outras frentes.",
+              "O erro de muitos profissionais no início é tentar estudar tudo ao mesmo tempo. Isso cria a sensação de movimento, mas dificulta a evolução. Uma carreira em TI cresce melhor quando existe uma direção clara, mesmo que ela mude com o tempo.",
+              "Quem gosta de criar produtos digitais pode olhar para software. Quem prefere análise, padrões e tomada de decisão pode seguir para dados ou IA. Quem se interessa por proteção e risco pode mirar cibersegurança. Já quem gosta de estrutura, escala e bastidores pode se aproximar de cloud, redes ou arquitetura.",
+              "## **Construa base antes de se especializar**",
+              "Escolher uma trilha não significa pular os fundamentos. Antes de aprofundar, vale construir uma base em lógica de programação, banco de dados, redes, sistemas operacionais, segurança da informação, noções de cloud e conceitos básicos de IA.",
+              "Esse conhecimentos aparecem em praticamente qualquer caminho mais avançado. Um profissional de dados precisa entender sistemas e bancos. Um desenvolvedor precisa considerar segurança e escalabilidade. Quem trabalha com cloud precisa compreender infraestrutura, custos e disponibilidade.",
+              "A base não prende o profissional a uma área. Pelo contrário: ela facilita mudanças de rota e ajuda a acompanhar novas tecnologias sem depender apenas da ferramenta da vez.",
+              "## **Desenvolva competências estratégicas**",
+              "A IA executa tarefas, mas não assume responsabilidades. Ela pode sugerir código, gerar relatórios, resumir documentos e automatizar etapas. Ainda assim, alguém precisa validar resultados, avaliar riscos, definir prioridades e entender o impacto técnico das decisões.",
+              "Por isso, algumas competências ganham força em uma trajetória mais avançada. A primeira é visão de arquitetura: entender como sistemas, dados, usuários e infraestrutura se conectam. Sem isso, uma solução pode até funcionar em pequena escala, mas quebrar quando cresce.",
+              "Outra habilidade importante é pensamento crítico. O profissional precisa saber quando confiar, testar, ajustar ou descartar uma sugestão gerada por IA.",
+              "Segurança também deve entrar desde o planejamento. Em projetos mais maduros, proteção de dados, controle de acesso e riscos de integração não podem ser tratados como detalhes finais.",
+              "## **Onde entram as Engenharias Tech?**",
+              "As Engenharias Tech fazem sentido para quem busca esse tipo de aprofundamento porque trabalham a construção da tecnologia em camadas: software, dados, cloud, redes, segurança, inteligência artificial e arquitetura.",
+              "Isso não significa que outras formações não sejam relevantes. Sistemas de Informação, Ciência da Computação e Análise e Desenvolvimento de Sistemas também podem abrir boas portas. A diferença é que as Engenharias Tech tendem a reforçar a lógica de projeto, integração, escala e evolução de soluções complexas.",
+              "Para quem quer crescer além da execução operacional, essa abordagem ajuda a desenvolver repertório técnico e visão de sistema.",
+              "## **Caminhos para crescer na área**",
+              "Com base sólida e especialização, surgem oportunidades mais estratégicas, como engenharia de software, engenharia de dados, arquitetura cloud, cibersegurança, engenharia de IA, arquitetura de soluções e engenharia de sistemas.",
+              "Essas funções costumam exigir mais do que saber usar uma ferramenta. Elas pedem capacidade de planejar, integrar, proteger, revisar e evoluir ambientes digitais.",
+              "Por isso, o crescimento na área depende de uma combinação: formação consistente, projetos práticos, atualização contínua e capacidade de tomar decisões técnicas com responsabilidade.",
+              "## **Conclusão**",
+              "Uma carreira em TI de alto nível nasce da combinação entre base sólida, especialização e visão estratégica. A IA muda tarefas, mas aumenta o valor de quem sabe projetar sistemas, interpretar riscos e construir tecnologia com profundidade."
+            ]
+          },
+          {
+            id: 19,
+            title: "19. Trabalhar com TI sem programar: quais caminhos fazem sentido?",
+            pageRange: "Págs 57-59",
+            content: [
+              "## **Trabalhar com TI sem programar: quais caminhos fazem sentido?**",
+              "Sim, é possível trabalhar com TI sem programar todos os dias. A tecnologia não vive só de código: empresas também precisam de pessoas para organizar processos, atender usuários, analisar riscos, gerenciar projetos, proteger dados e conectar áreas de negócio com times técnicos. Ainda assim, “não programar” não significa “não estudar tecnologia”. Quem deseja crescer pode, com o tempo, aprofundar sua base técnica em formações ligadas às engenharias tech, especialmente se quiser atuar em projetos mais complexos.",
+              "## **Áreas de TI com menos foco em programação**",
+              "Nem toda função em tecnologia exige criar sistemas do zero. Algumas pedem mais análise, comunicação, organization e entendimento de processos.",
+              "### **Suporte técnico**",
+              "É uma porta de entrada comum para quem está começando. O profissional ajuda usuários a resolver problemas com computadores, sistemas, acessos, equipamentos e ferramentas corporativas. Para atuar bem, vale estudar sistemas operacionais, redes básicas, segurança da informação e atendimento ao usuário.",
+              "### **Análise de negócios em tecnologia**",
+              "O analista de negócios entende as necessidades da empresa e traduz essas demandas para o time técnico. Ele não precisa necessariamente programar, mas precisa organizar requisitos, explicar problemas com clareza e entender como os sistemas apoiam a operação.",
+              "### **Gestão de projetos de TI**",
+              "Quem trabalha com projetos acompanha prazos, entregas, prioridades e comunicação entre equipes. O foco é garantir que a solução avance sem bagunça. É uma área interessante para quem tem perfil organizador e gosta de conectar pessoas, processos e tecnologia.",
+              "### **UX e UI**",
+              "UX significa experiência do usuário: como uma pessoa se sente ao usar um produto digital. UI significa interface do usuário: a parte visual e interativa de um site ou aplicativo. Essas áreas costumam envolver pesquisa, protótipos, testes com usuários e entendimento de produtos digitais, não programação como atividade principal.",
+              "### **Segurança da informação**",
+              "Nem toda atuação em segurança começa pela programação. É possível trabalhar com políticas de acesso, análise de riscos, conformidade, conscientização e monitoramento. Com o tempo, aprender scripts e automação pode ajudar bastante, mas esse nem sempre é o ponto de partida.",
+              "## **Como começar em TI sem saber programar?**",
+              "O primeiro passo é entender o básico da área. Mesmo em funções com menos foco em código, é importante saber o que é TI, como sistemas funcionam, como dados circulam e por que segurança importa.",
+              "Depois, escolha uma trilha inicial. Quem gosta de ajudar pessoas pode começar por suporte. Quem tem perfil analítico pode explorar análise de negócios, segurança ou processos. Quem gosta de organização pode seguir para gestão de projetos. Quem se interessa por comportamento e design pode olhar para UX/UI.",
+              "Também vale desenvolver habilidades que aparecem em quase todas essas funções: comunicação clara, raciocínio lógico, organização, leitura de documentação, visão de processos, noções de dados e curiosidade para aprender ferramentas.",
+              "A formação formal pode ajudar porque organiza o aprendizado e mostra como as áreas se conectam. Mesmo sem foco inicial em programação, estudar fundamentos evita que o profissional fique limitado a uma única ferramenta.",
+              "## **Quando programação passa a ajudar?**",
+              "Você não precisa começar programando, mas entender o básico de código pode abrir caminhos. Programação ajuda a automatizar tarefas, conversar melhor com desenvolvedores e compreender limitações técnicas.",
+              "Um analista de segurança pode usar scripts simples para analisar registros de acesso. Um gestor de projetos pode estimar melhor o esforço de uma entrega. Uma pessoa de UX pode conversar com mais clareza sobre o que é simples ou complexo de implementar.",
+              "A diferença é que programação não precisa ser o centro da carreira desde o início. Ela pode ser uma habilidade complementar, aprendida aos poucos conforme o profissional amadurece.",
+              "## **Onde entram as Engenharias Tech?**",
+              "Começar em uma área com menos programação pode ser uma boa porta de entrada. Mas, para crescer em funções mais estratégicas, costuma ser necessário aprofundar fundamentos técnicos.",
+              "É nesse ponto que as engenharias tech entram como próximo passo possível. Elas ajudam a desenvolver uma visão mais estrutural sobre software, dados, cloud, segurança, IA e arquitetura de sistemas.",
+              "Ou seja: você pode começar sem programar todos os dias, mas quanto mais entender como a tecnologia é construída, maiores tendem a ser suas possibilidades de evolução.",
+              "## **Conclusão**",
+              "Existem caminhos em TI para quem não quer começar escrevendo código. Suporte, análise de negócios, projetos, UX/UI e algumas frentes de segurança podem ser boas portas de entrada.",
+              "O ponto mais importante é não confundir “não programar” com “não estudar tecnologia”. Para crescer, é preciso entender sistemas, dados, processos e segurança com seriedade."
+            ]
+          },
+          {
+            id: 20,
+            title: "20. Áreas de TI mais bem pagas: o que elas têm em comum?",
+            pageRange: "Págs 60-61",
+            content: [
+              "## **Áreas de TI mais bem pagas: o que elas têm em comum?**",
+              "As áreas de TI mais bem pagas costumam ter algo em comum: exigem profundidade técnica para construir, sustentar e evoluir sistemas complexos. Isso não significa que exista um ranking fixo de salários, já que remuneração varia conforme senioridade, empresa, localização e modelo de contratação. Mas algumas frentes aparecem com frequência entre as mais valorizadas porque lidam com problemas críticos para o funcionamento dos negócios. É o caso de dados, cloud e software, áreas muito conectadas às engenharias tech por aplicarem princípios de engenharia à criação de soluções robustas.",
+              "## **Quais áreas têm maior potencial de remuneração?**",
+              "As carreiras mais valorizadas em tecnologia costumam estar ligadas à construção da infraestrutura digital das empresas. Entre elas, aparecem com destaque Engenharia de Dados, Engenharia Cloud e Engenharia de Software.",
+              "Também há forte potencial em cibersegurança, inteligência artificial, arquitetura de soluções e engenharia de sistemas. Todas essas áreas têm algo em comum:\n- Exigem mais do que saber usar uma ferramenta;\n- O profissional precisa entender estrutura, integração, segurança, desempenho e escalabilidade.",
+              "Por isso, muitas das profissões de TI mais bem pagas estão relacionadas a decisões técnicas que afetam sistemas inteiros. Quanto maior o impacto da função na continuidade, na eficiência ou na segurança do negócio, maior tende a ser sua valorização.",
+              "## **Por que Dados, Cloud e Software lideram a valorização?**",
+              "### **Engenharia de Dados**",
+              "A Engenharia de Dados organiza, integra e prepara informações para que empresas possam tomar decisões melhores. Sem dados confiáveis, relatórios falham, modelos de inteligência artificial perdem qualidade e estratégias podem ser construídas sobre informações ruins.",
+              "Esse profissional trabalha com bancos de dados, pipelines, integração de fontes, qualidade da informação e processamento em escala. É uma área valorizada porque dados bem estruturados sustentam análises, automações e decisões estratégicas.",
+              "### **Engenharia Cloud**",
+              "Cloud significa computação em nuvem: uso de servidores acessados pela internet para rodar sistemas, armazenar dados e escalar aplicações.",
+              "A Engenharia Cloud é importante porque muitas empresas dependem de ambientes digitais estáveis, seguros e flexíveis. Um erro de arquitetura pode gerar lentidão, custos altos ou falhas em serviços essenciais. Por isso, profissionais capazes de planejar infraestrutura, controlar gastos, proteger ambientes e garantir disponibilidade tendem a ser muito disputados.",
+              "### **Engenharia de Software**",
+              "A Engenharia de Software vai além da programação. Ela envolve arquitetura, testes, documentação, manutenção, qualidade e evolução de sistemas.",
+              "Com ferramentas de IA gerando trechos de código, o valor do profissional passa a estar ainda mais na capacidade de planejar soluções, revisar entregas e garantir que o sistema funcione bem no longo prazo. O código importa, mas a engenharia por trás dele é o que sustenta produtos digitais confiáveis.",
+              "## **Como se preparar para essas áreas?**",
+              "Para crescer nas áreas de TI mais bem pagas, o caminho não costuma ser pular direto para ferramentas avançadas. A base vem primeiro.",
+              "Fundamentos como lógica, banco de dados, redes, sistemas operacionais, segurança da informação, cloud e arquitetura ajudam o profissional a entender como as soluções funcionam por dentro. Depois, faz sentido escolher uma trilha: dados para quem gosta de informação e análise; cloud para quem se interessa por infraestrutura e escala; software para quem quer construir produtos digitais.",
+              "A formação formal pode ajudar bastante quando combina teoria, prática e projetos. Nas Engenharias Tech, esse aprendizado tende a reforçar a visão estrutural: projetar, integrar, testar, proteger e evoluir soluções com método.",
+              "Também vale desenvolver competências como comunicação, pensamento crítico e organização. Quanto mais estratégica a função, mais importante se torna explicar decisões técnicas para pessoas de áreas diferentes.",
+              "## **Conclusão**",
+              "As áreas de TI mais bem pagas não se destacam apenas por estarem “em alta”. Elas são valorizadas porque exigem profundidade estrutural: saber projetar, integrar, proteger e evoluir tecnologia.",
+              "Para quem deseja construir uma carreira mais forte, o melhor caminho é combinar fundamentos, especialização e prática."
+            ]
+          }
+        ];
+
+        // --- SISTEMA DE GERENCIAMENTO DE ESTADO GLOBAL ---
+        const state = {
+            currentChapterIndex: -1,       // -1 representa a Capa Escrita
+            theme: 'light',                // 'light' (Dia) ou 'dark' (Noite)
+            fontSize: 'normal',            // 'small', 'normal', 'large', 'xl'
+            bookmarks: [],
+            searchQuery: '',
+            activePanel: null              // 'search' ou 'bookmarks' (Dropdowns ativos na barra superior)
+        };
+
+        // Carrega marcadores persistidos no browser
+        function loadBookmarks() {
+            try {
+                const saved = localStorage.getItem('ebook_bookmarks');
+                state.bookmarks = saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                state.bookmarks = [];
+            }
+            updateBookmarksCount();
+        }
+
+        function saveBookmarks() {
+            localStorage.setItem('ebook_bookmarks', JSON.stringify(state.bookmarks));
+            updateBookmarksCount();
+        }
+
+        function updateBookmarksCount() {
+            const el = document.getElementById('bookmarks-count');
+            if (el) el.innerText = state.bookmarks.length;
+        }
+
+        // --- CONTROLES DE PAINÉIS FLUTUANTES (DROPDOWNS SUPERIORES) ---
+        function toggleTabPanel(panelName) {
+            const searchPanel = document.getElementById('search-panel');
+            const bookmarksPanel = document.getElementById('bookmarks-panel');
+
+            // Se clicar no painel já ativo, fecha-o
+            if (state.activePanel === panelName) {
+                state.activePanel = null;
+            } else {
+                state.activePanel = panelName;
+            }
+
+            // Atualiza visibilidade dos painéis de forma fluida
+            if (state.activePanel === 'search') {
+                searchPanel.classList.remove('hidden');
+                bookmarksPanel.classList.add('hidden');
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) searchInput.focus();
+                renderSearchPanel();
+            } else if (state.activePanel === 'bookmarks') {
+                bookmarksPanel.classList.remove('hidden');
+                searchPanel.classList.add('hidden');
+                renderBookmarksPanel();
+            } else {
+                searchPanel.classList.add('hidden');
+                bookmarksPanel.classList.add('hidden');
+            }
+
+            // Atualiza o destaque visual dos botões de aba
+            updateTabButtonStyles();
+        }
+
+        function closePanels() {
+            state.activePanel = null;
+            document.getElementById('search-panel').classList.add('hidden');
+            document.getElementById('bookmarks-panel').classList.add('hidden');
+            updateTabButtonStyles();
+        }
+
+        function updateTabButtonStyles() {
+            const btnSearch = document.getElementById('tab-btn-search');
+            const btnBookmarks = document.getElementById('tab-btn-bookmarks');
+
+            // Reset (Bordas padrão do cabeçalho)
+            btnSearch.className = "px-3 py-1.5 rounded-lg border border-current text-xs font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center space-x-1";
+            btnBookmarks.className = "px-3 py-1.5 rounded-lg border border-current text-xs font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center space-x-1";
+
+            // Ativa destaque na aba aberta usando o azul oficial Infnet #23599c
+            if (state.activePanel === 'search') {
+                btnSearch.className = "px-3 py-1.5 rounded-lg bg-[#23599c] text-white text-xs font-bold transition-all flex items-center space-x-1 border border-transparent";
+            } else if (state.activePanel === 'bookmarks') {
+                btnBookmarks.className = "px-3 py-1.5 rounded-lg bg-[#23599c] text-white text-xs font-bold transition-all flex items-center space-x-1 border border-transparent";
+            }
+        }
+
+        // --- ROTINAS DE EVENTOS E NAVEGAÇÃO ---
+        function setChapter(index) {
+            state.currentChapterIndex = index;
+
+            // Toggle do botão fita de favorito no header (só aparece em artigos)
+            const fitaBtn = document.getElementById('bookmark-header-btn');
+            if (fitaBtn) {
+                if (index === -1) {
+                    fitaBtn.classList.add('hidden');
+                } else {
+                    fitaBtn.classList.remove('hidden');
+                    updateHeaderBookmarkIcon();
+                }
+            }
+
+            // Atualiza Breadcrumb
+            const breadcrumb = document.getElementById('header-breadcrumb');
+            if (breadcrumb) {
+                breadcrumb.innerText = index === -1 ? "" : `ARTIGO ${index + 1} DE ${ebookData.length}`;
+            }
+
+            // Atualiza Barra de Progresso Superior
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                const percent = ((index + 2) / (ebookData.length + 1)) * 100;
+                progressBar.style.width = `${percent}%`;
+            }
+
+            // Renderiza Conteúdo Principal e atualiza os dropdowns se estiverem abertos
+            renderContent();
+            if (state.activePanel === 'bookmarks') {
+                renderBookmarksPanel();
+            }
+
+            // Rola o container interno de volta ao topo instantaneamente
+            const container = document.getElementById('scroll-container');
+            if (container) {
+                container.scrollTop = 0;
+            }
+        }
+
+        function setTheme(themeName) {
+            state.theme = themeName;
+            
+            // Mapeamento de Cores do Tema no Body, Barra Superior e Dropdowns
+            const root = document.getElementById('app-root');
+            const topNavigation = document.getElementById('top-navigation');
+            const searchPanel = document.getElementById('search-panel');
+            const bookmarksPanel = document.getElementById('bookmarks-panel');
+            
+            const themeClasses = {
+                light: { 
+                    body: 'bg-white text-slate-800', 
+                    topNavigation: 'bg-slate-50 border-slate-200 text-slate-800',
+                    panel: 'bg-white border-slate-200 text-slate-800'
+                },
+                dark: { 
+                    body: 'bg-[#0f172a] text-slate-100', // Unificado com a mesma cor padrão de barra lateral (Slate 900)
+                    topNavigation: 'bg-[#0f172a] border-slate-800 text-slate-100',
+                    panel: 'bg-[#0f172a] border-slate-800 text-slate-100'
+                }
+            };
+
+            // Aplica os estilos nos elementos pai
+            root.className = `h-screen max-h-screen overflow-hidden flex flex-col transition-colors duration-200 ${themeClasses[themeName].body}`;
+            topNavigation.className = `w-full border-b px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3 flex-shrink-0 z-50 ${themeClasses[themeName].topNavigation}`;
+            searchPanel.className = `hidden absolute top-32 md:top-[68px] right-4 w-80 border rounded-xl shadow-2xl z-50 p-4 max-h-[70vh] flex flex-col space-y-4 ${themeClasses[themeName].panel}`;
+            bookmarksPanel.className = `hidden absolute top-32 md:top-[68px] right-4 w-80 border rounded-xl shadow-2xl z-50 p-4 max-h-[70vh] flex flex-col space-y-3 ${themeClasses[themeName].panel}`;
+
+            // Seleção visual dos botões de temas superiores
+            ['light', 'dark'].forEach(t => {
+                const btn = document.getElementById(`theme-btn-${t}`);
+                if (btn) {
+                    if (t === themeName) {
+                        btn.className = "px-2 py-1 rounded text-[10px] font-bold uppercase transition-all bg-[#23599c] text-white";
+                    } else {
+                        btn.className = "px-2 py-1 rounded text-[10px] font-bold uppercase transition-all opacity-60";
+                    }
+                }
+            });
+
+            // Atualiza conteúdos
+            renderContent();
+            updateTabButtonStyles();
+            updateHeaderBookmarkIcon();
+        }
+
+        function toggleFontSize() {
+            const sizes = ['small', 'normal', 'large', 'xl'];
+            const nextIdx = (sizes.indexOf(state.fontSize) + 1) % sizes.length;
+            state.fontSize = sizes[nextIdx];
+            renderContent();
+        }
+
+        function toggleCurrentBookmark() {
+            if (state.currentChapterIndex === -1) return;
+            const activeId = ebookData[state.currentChapterIndex].id;
+            const idx = state.bookmarks.indexOf(activeId);
+            if (idx !== -1) {
+                state.bookmarks.splice(idx, 1);
+            } else {
+                state.bookmarks.push(activeId);
+            }
+            saveBookmarks();
+            updateHeaderBookmarkIcon();
+            if (state.activePanel === 'bookmarks') {
+                renderBookmarksPanel();
+            }
+        }
+
+        function updateHeaderBookmarkIcon() {
+            const icon = document.getElementById('bookmark-header-icon');
+            const btn = document.getElementById('bookmark-header-btn');
+            if (!icon || !btn || state.currentChapterIndex === -1) return;
+            const activeId = ebookData[state.currentChapterIndex].id;
+            const isBookmarked = state.bookmarks.includes(activeId);
+            if (isBookmarked) {
+                icon.setAttribute('fill', 'currentColor');
+                icon.className = "w-5 h-5 text-blue-600 dark:text-blue-400 opacity-100 transition-all duration-200";
+                btn.className = "p-2 rounded-lg bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all duration-200";
+            } else {
+                icon.setAttribute('fill', 'none');
+                icon.className = "w-5 h-5 opacity-50 text-slate-800 dark:text-slate-200 transition-all duration-200";
+                btn.className = "p-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all duration-200";
+            }
+        }
+
+        // --- SISTEMA DE FORMATAÇÃO E PARSE DE TEXTO ---
+        function highlightText(text, search) {
+            if (!text || !search || !search.trim()) return text;
+            const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escapedSearch})`, 'gi');
+            return text.replace(regex, `<mark class="bg-yellow-200 text-black px-0.5 rounded font-semibold">$1</mark>`);
+        }
+
+        function renderFormattedText(text, search, isTitle = false) {
+            if (!text) return '';
+            const boldParts = text.split('**');
+            let resultHTML = '';
+            
+            boldParts.forEach((part, index) => {
+                const isBold = index % 2 === 1;
+                const content = highlightText(part, search);
+                if (isBold) {
+                    const boldClass = isTitle ? "font-extrabold text-[#689ccb]" : "font-extrabold text-inherit";
+                    resultHTML += `<strong class="${boldClass}">${content}</strong>`;
+                } else {
+                    resultHTML += `<span>${content}</span>`;
+                }
+            });
+            return resultHTML;
+        }
+
+        // Removidas as classes rígidas de texto para que todos os parágrafos respondam perfeitamente ao seletor de tamanho de fonte global
+        function renderParagraphHTML(paragraph) {
+            // Títulos dinâmicos (##)
+            if (paragraph.startsWith('## ')) {
+                return `<h3 class="text-xl md:text-2xl font-bold mt-8 mb-4 border-b pb-2 text-[#23599c] dark:text-[#508ad3] border-current opacity-90">
+                    ${renderFormattedText(paragraph.replace('## ', ''), state.searchQuery, true)}
+                </h3>`;
+            }
+            // Subtítulos (###)
+            if (paragraph.startsWith('### ')) {
+                return `<h4 class="text-lg md:text-xl font-bold mt-6 mb-3 text-[#23599c] dark:text-[#508ad3]">
+                    ${renderFormattedText(paragraph.replace('### ', ''), state.searchQuery, true)}
+                </h4>`;
+            }
+            // Listas normatizadas (- ou •)
+            if (paragraph.startsWith('- ') || paragraph.startsWith('• ') || paragraph.startsWith('•\n')) {
+                return `<li class="ml-5 list-disc mb-2 pl-2 leading-relaxed">
+                    ${renderFormattedText(paragraph.replace(/^[-•]\s*/, ''), state.searchQuery, false)}
+                </li>`;
+            }
+
+            // Tratamento de quebras de linhas internas
+            if (paragraph.includes('\n')) {
+                const lines = paragraph.split('\n');
+                let compositeHTML = '<div class="my-4 space-y-2">';
+                lines.forEach(line => {
+                    if (line.startsWith('- ') || line.startsWith('• ')) {
+                        compositeHTML += `<li class="ml-5 list-disc pl-2 leading-relaxed">${renderFormattedText(line.replace(/^[-•]\s*/, ''), state.searchQuery, false)}</li>`;
+                    } else if (line.includes(':') && line.length < 120) {
+                        const parts = line.split(':');
+                        const boldPart = parts[0];
+                        const normalPart = parts.slice(1).join(':');
+                        compositeHTML += `<p class="mb-1 leading-relaxed"><strong class="text-[#23599c] dark:text-[#508ad3]">${renderFormattedText(boldPart, state.searchQuery, false)}:</strong>${renderFormattedText(normalPart, state.searchQuery, false)}</p>`;
+                    } else {
+                        compositeHTML += `<p class="leading-relaxed">${renderFormattedText(line, state.searchQuery, false)}</p>`;
+                    }
+                });
+                compositeHTML += '</div>';
+                return compositeHTML;
+            }
+
+            return `<p class="mb-4 text-justify leading-relaxed">${renderFormattedText(paragraph, state.searchQuery, false)}</p>`;
+        }
+
+        // --- RENDERIZAÇÃO DO CONTEÚDO PRINCIPAL (Artigo Ativo ou Capa) ---
+        function renderContent() {
+            const container = document.getElementById('scroll-container');
+            if (!container) return;
+
+            // Renderiza Capa Escrita caso o índice seja -1
+            if (state.currentChapterIndex === -1) {
+                // Layout elegante com fundo fixo #689ccb e textos contrastantes em #013056
+                let coverHTML = `
+                <div class="relative flex flex-col items-center justify-between text-center min-h-[75vh] py-12 px-6 rounded-3xl border border-dashed border-white/20 bg-[#013056] text-white overflow-hidden shadow-2xl">
+                    
+                    <!-- Corpo Principal de Títulos -->
+                    <div class="flex flex-col items-center my-auto space-y-6 max-w-2xl pt-10">
+                        <div class="mb-2">
+                            <img src="https://faculdadeinfnet.com.br/wp-content/uploads/sites/10/2023/08/Artboard-2.png" alt="Logo Infnet Grande" class="h-20 object-contain" />
+                        </div>
+
+                        <!-- Título com "E-book" sozinho numa linha e "Engenharias Tech" juntas na linha seguinte -->
+                        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight text-white drop-shadow-sm">
+                            <span class="block">E-book</span>
+                            <span class="block">Engenharias Tech</span>
+                        </h1>
+                        
+                        <p class="text-base sm:text-lg md:text-xl text-white font-medium leading-relaxed max-w-xl">
+                            Construindo o Futuro da Tecnologia: O guia definitivo para entender, projetar e liderar as Engenharias Tech.
+                        </p>
+
+                        <div class="pt-6">
+                            <button onclick="setChapter(0)" class="px-8 py-4 bg-[#23599c] hover:bg-[#1a4478] active:scale-95 text-white font-black text-sm rounded-2xl shadow-lg hover:shadow-[#23599c]/20 transition-all flex items-center space-x-3 mx-auto">
+                                <span>ABRIR E-BOOK INTERATIVO</span>
+                                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sumário de Atalhos Rápidos Pleno e Aberto na Capa (Um por Linha, Sem Corte de Título) -->
+                    <div class="w-full mt-12 pt-8 border-t border-[#013056]/20">
+                        <h3 class="text-sm font-black uppercase tracking-widest text-center text-white drop-shadow-sm mb-6">
+                            Índice Geral de Conteúdo
+                        </h3>
+                        
+                        <!-- Lista plana e aberta, com um capítulo por linha -->
+                        <div class="w-full max-w-3xl mx-auto space-y-3 text-left">
+                `;
+
+                ebookData.forEach((chap, idx) => {
+                    coverHTML += `
+                        <button onclick="setChapter(${idx})" class="w-full p-4 border border-white/20 rounded-xl bg-white/5 hover:bg-white/15 text-left transition-all text-white font-semibold whitespace-normal break-words leading-relaxed text-sm block shadow-sm">
+                            ${chap.title}
+                        </button>
+                    `;
+                });
+
+                coverHTML += `
+                        </div>
+                    </div>
+                </div>
+                `;
+
+                container.innerHTML = coverHTML;
+                return;
+            }
+
+            // Renderiza Artigo de Leitura Ativo
+            const article = ebookData[state.currentChapterIndex];
+            const fontClasses = {
+                small: 'text-xs md:text-sm leading-relaxed',
+                normal: 'text-sm md:text-base leading-relaxed',
+                large: 'text-lg md:text-xl leading-relaxed',
+                xl: 'text-xl md:text-2xl leading-relaxed'
+            };
+
+            const articleBgClasses = {
+                light: 'bg-slate-50 border-slate-100 text-slate-700',
+                dark: 'bg-slate-800 border-slate-700 text-slate-300'
+            };
+
+            let paragraphsHTML = '';
+            article.content.forEach(paragraph => {
+                paragraphsHTML += renderParagraphHTML(paragraph);
+            });
+
+            // Corrigidas as variáveis de interpolação JavaScript (${}) que estavam usando sintaxe inadequada do React no template string
+            const articleHTML = `
+            <article class="space-y-6 ${fontClasses[state.fontSize]}">
+                <header class="space-y-2 pb-6 border-b border-current opacity-80">
+                    <div class="text-xs font-bold text-[#23599c] dark:text-[#508ad3] tracking-wider uppercase flex items-center space-x-2">
+                        <span>Instituto Infnet • ${article.pageRange}</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-black leading-tight">
+                        ${renderFormattedText(article.title, state.searchQuery, true)}
+                    </h2>
+                </header>
+
+                <div class="space-y-4">
+                    ${paragraphsHTML}
+                </div>
+
+                <div class="p-4 rounded-xl border-l-4 ${articleBgClasses[state.theme]} mt-8">
+                    <p class="text-xs font-serif italic">
+                        Este conteúdo faz parte do ecossistema das Engenharias Tech do Instituto Infnet, preparando profissionais estratégicos e estruturais para a TI do futuro.
+                    </p>
+                </div>
+
+                <!-- Barra de Navegação de Rodapé de Leitura -->
+                <div class="p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-current opacity-50 text-xs font-bold">
+                    <button onclick="setChapter(${state.currentChapterIndex - 1})" class="w-full sm:w-auto px-4 py-2 border rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-center transition-all flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        <span>Anterior</span>
+                    </button>
+
+                    <button onclick="setChapter(-1)" class="w-full sm:w-auto px-4 py-2 border rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-center transition-all">
+                        Ir para a Capa
+                    </button>
+
+                    ${state.currentChapterIndex < ebookData.length - 1 ? `
+                        <button onclick="setChapter(${state.currentChapterIndex + 1})" class="w-full sm:w-auto px-4 py-2 border rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-center transition-all flex items-center justify-center space-x-2">
+                            <span>Próximo</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    ` : `
+                        <button onclick="setChapter(-1)" class="w-full sm:w-auto px-4 py-2 bg-[#23599c] text-white rounded-lg text-center transition-all">
+                            Voltar ao Início
+                        </button>
+                    `}
+                </div>
+            </article>
+            `;
+
+            container.innerHTML = articleHTML;
+        }
+
+        // --- RENDERIZAÇÃO DOS PAINÉIS FLUTUANTES SUPERIORES ---
+        function renderBookmarksPanel() {
+            const container = document.getElementById('bookmarks-panel-content');
+            if (!container) return;
+
+            let tabHTML = '';
+            if (state.bookmarks.length === 0) {
+                tabHTML += `
+                <p class="text-xs text-center opacity-60 py-8">
+                    Nenhum capítulo favoritado ainda. Toque na fita de favoritos enquanto lê para salvar aqui!
+                </p>
+                `;
+            } else {
+                state.bookmarks.forEach(bId => {
+                    const chapterIndex = ebookData.findIndex(c => c.id === bId);
+                    const chapter = ebookData[chapterIndex];
+                    if (chapter) {
+                        tabHTML += `
+                        <button onclick="setChapter(${chapterIndex}); toggleTabPanel('bookmarks');" class="w-full text-left p-3 rounded-lg border border-current opacity-80 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-xs flex justify-between items-center transition-all">
+                            <div class="truncate pr-2">
+                                <div class="font-semibold">${chapter.title}</div>
+                                <div class="text-[10px] opacity-60">${chapter.pageRange}</div>
+                            </div>
+                            <svg class="w-4 h-4 text-[#23599c] dark:text-[#508ad3] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                            </svg>
+                        </button>
+                        `;
+                    }
+                });
+            }
+
+            container.innerHTML = tabHTML;
+        }
+
+        function renderSearchPanel() {
+            const resultsContent = document.getElementById('search-results-content');
+            const GrandpaResultsInfo = document.getElementById('search-results-info');
+            if (!resultsContent || !GrandpaResultsInfo) return;
+
+            const results = [];
+            if (state.searchQuery.trim()) {
+                ebookData.forEach(chapter => {
+                    chapter.content.forEach((paragraph, pIdx) => {
+                        if (paragraph.toLowerCase().includes(state.searchQuery.toLowerCase())) {
+                            results.push({
+                                chapterId: chapter.id,
+                                chapterTitle: chapter.title,
+                                paragraph: paragraph,
+                                index: pIdx
+                            });
+                        }
+                    });
+                });
+            }
+
+            // Mostra informações do resultado de pesquisa
+            if (state.searchQuery) {
+                GrandpaResultsInfo.classList.remove('hidden');
+                GrandpaResultsInfo.innerText = `${results.length} trechos encontrados`;
+            } else {
+                GrandpaResultsInfo.classList.add('hidden');
+            }
+
+            let resultsHTML = '';
+            results.forEach(res => {
+                const matchedChapterIdx = ebookData.findIndex(c => c.id === res.chapterId);
+                resultsHTML += `
+                <button onclick="setChapter(${matchedChapterIdx}); toggleTabPanel('search');" class="w-full text-left p-2.5 rounded-lg border border-[#23599c]/20 hover:bg-[#23599c]/5 text-xs space-y-1 block transition-all">
+                    <div class="font-bold text-[#23599c] dark:text-[#508ad3] truncate">${res.chapterTitle}</div>
+                    <p class="line-clamp-3 opacity-80 italic">"...${highlightText(res.paragraph, state.searchQuery)}..."</p>
+                </button>
+                `;
+            });
+
+            if (state.searchQuery && results.length === 0) {
+                resultsHTML += `<p class="text-xs text-center opacity-60 py-4">Nenhum resultado para "${state.searchQuery}".</p>`;
+            } else if (!state.searchQuery) {
+                resultsHTML += `<p class="text-xs text-center opacity-60 py-4">Digite termos acima para pesquisar em todo o e-book...</p>`;
+            }
+
+            resultsContent.innerHTML = resultsHTML;
+        }
+
+        function handleSearch(val) {
+            state.searchQuery = val;
+            renderSearchPanel();
+            renderContent();
+        }
+
+        // --- EXECUÇÃO DE ARRANQUE DO APLICATIVO ---
+        window.onload = function() {
+            loadBookmarks();
+            setTheme('light'); // Define tema Dia (claro) como padrão inicial
+            setChapter(-1);    // Define a página inicial como a Capa Escrita
+        };
+    </script>
+</body>
+</html>
