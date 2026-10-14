@@ -48,7 +48,7 @@
 
     <div id="app-root" class="h-screen max-h-screen overflow-hidden flex flex-col transition-colors duration-200 bg-white text-slate-800">
         
-        <!-- BARRA SUPERIOR DE NAVEGAÇÃO -->
+        <!-- BARRA SUPERIOR DE NAVEGAÇÃO HORIZONTAL -->
         <header id="top-navigation" class="w-full border-b px-4 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3 flex-shrink-0 z-50 bg-slate-50 border-slate-200 text-slate-800">
             <!-- Esquerda: Retorno à Capa e Breadcrumb -->
             <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
@@ -64,7 +64,7 @@
                 </div>
             </div>
 
-            <!-- Direita: Pesquisa, Marcadores, Fonte, Temas e Favorito -->
+            <!-- Direita: Pesquisa, Marcadores, Ajuste de Fonte, Temas e Favorito -->
             <div class="flex items-center justify-between md:justify-end space-x-2 w-full md:w-auto border-t md:border-t-0 pt-2 md:pt-0">
                 <div class="flex items-center space-x-1">
                     <button id="tab-btn-search" onclick="toggleTabPanel('search')" class="px-3 py-1.5 rounded-lg border border-current text-xs font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center space-x-1">
@@ -106,7 +106,7 @@
         <!-- PAINEL SUSPENSO DE PESQUISA -->
         <div id="search-panel" class="hidden absolute top-28 md:top-[60px] right-4 w-84 md:w-96 border rounded-xl shadow-2xl z-50 p-4 max-h-[70vh] flex flex-col space-y-3 bg-white border-slate-200 text-slate-800">
             <div class="relative">
-                <input id="search-input" type="text" placeholder="Pesquisar nos 21 capítulos..." oninput="handleSearch(this.value)" class="w-full px-3 py-2 pl-9 rounded-lg border text-sm bg-transparent border-current focus:ring-2 focus:ring-[#23599c] focus:outline-none" />
+                <input id="search-input" type="text" placeholder="Pesquisar nos capítulos..." oninput="handleSearch(this.value)" class="w-full px-3 py-2 pl-9 rounded-lg border text-sm bg-transparent border-current focus:ring-2 focus:ring-[#23599c] focus:outline-none" />
                 <svg class="w-4 h-4 absolute left-3 top-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -145,7 +145,7 @@
               "• **Engenharia** diz respeito à forma de abordar um problema: compreender requisitos, trabalhar com restrições, comparar alternativas, projetar uma solução, testá-la e acompanhar seu comportamento ao longo do tempo.",
               "• **Tech** indica onde esse pensamento está sendo aplicado. Nesse caso, o objeto de construção é predominantemente digital: software, sistemas inteligentes, plataformas de dados, ambientes em nuvem e arquiteturas de segurança.",
               "Uma ponte e uma plataforma digital são objetos muito diferentes, mas existe uma pergunta comum aos dois problemas de engenharia: **como construir algo que funcione de maneira confiável dentro das condições previstas?**",
-              "No ambiente tecnológico, essa pergunta pode envolver outras tantas: Como um sistema continuará funcionando quando o número de usuários crescer? Como manter dados disponíveis e confiáveis? Como incorporar inteligência artificial sem comprometer segurança ou controle? Como reduzir falhas em uma infraestrutura distribuída? Como permitir que uma aplicação evolua sem tornar sua arquitetura cada vez mais difícil de manter?",
+              "No ambiente tecnológico, essa pergunta pode envolver outras tantas. Como um sistema continuará funcionando quando o número de usuários crescer? Como manter dados disponíveis e confiáveis? Como incorporar inteligência artificial sem comprometer segurança ou controle? Como reduzir falhas em uma infraestrutura distribuída? Como permitir que uma aplicação evolua sem tornar sua arquitetura cada vez mais difícil de manter?",
               "É nesse nível de decisão que o pensamento de engenharia se torna especialmente relevante.",
               "## **O que diferencia uma Engenharia Tech?**",
               "Uma Engenharia Tech não é definida simplesmente pelo uso de tecnologias avançadas.",
@@ -156,7 +156,7 @@
               "### **Arquitetura**",
               "Antes de implementar uma solução, é preciso decidir como suas partes serão organizadas. Arquitetura envolve escolhas sobre componentes, comunicação, armazenamento, processamento, segurança, disponibilidade e capacidade de crescimento. Essas decisões criam consequências que podem acompanhar um sistema durante anos.",
               "### **Integração**",
-              "Sistemas digitais raramente funcionam sozinhos. Uma aplicação pode depender de APIs, bancos de dados, serviços em nuvem, mecanismos de autenticação, plataformas externas e pipelines de dados. Uma solução de IA, por sua vez, precisa conviver com software, infraestrutura, informações e mecanismos de segurança. Conectar essas partes de maneira coerente é, em si, um problema de engenharia.",
+              "Sistemas digitais raramente funcionam sozinhos. Uma aplicação pode depender de APIs, bancos de dados, serviços em nuvem, mecanismos de autenticação, plataformas externas e pipelines de dados. Uma solução de IA, por sua vez, precisa conviver com software, infraestrutura, informações e mechanisms de segurança. Conectar essas partes de maneira coerente é, em si, um problema de engenharia.",
               "### **Decisões sob restrições**",
               "Não existe uma solução tecnicamente perfeita para todo cenário. Aumentar o desempenho pode elevar custos. Reforçar determinados controles de segurança pode acrescentar complexidade. Uma arquitetura muito sofisticada pode ser inadequada para um produto pequeno. Engenharia envolve justamente equilibrar requisitos que nem sempre apontam para a mesma direção.",
               "### **Visão sistêmica**",
@@ -170,11 +170,16 @@
               "As Engenharias Tech se concentram especialmente neste segundo nível.",
               "### **Quais áreas fazem parte das Engenharias Tech?**",
               "No Infnet, a categoria é formada por cinco **Engenharias Live, com duração de quatro anos**:",
-              "• **Engenharia de Software:** A Engenharia de Software se concentra no projeto e na evolução de sistemas de software. Isso envolve desenvolvimento, mas também arquitetura, qualidade, integração, escalabilidade, manutenção e decisões sobre como aplicações devem ser estruturadas para continuar evoluindo.",
-              "• **Engenharia de Inteligência Artificial:** A Engenharia de Inteligência Artificial trabalha com o projeto e a integração de sistemas inteligentes. Além dos modelos propriamente ditos, entram questões ligadas a dados, avaliação, infraestrutura, integração com aplicações e acompanhamento das soluções em funcionamento.",
-              "• **Engenharia de Dados com IA:** A Engenharia de Dados com IA se dedica às estruturas necessárias para coletar, processar, integrar, organizar e disponibilizar dados com qualidade. Pipelines, arquiteturas de dados, processamento em escala, governança e integração fazem parte desse universo - inclusive para criar bases confiáveis para aplicações de inteligência artificial.",
-              "• **Engenharia de Cloud Computing:** A Engenharia de Cloud Computing trata da infraestrutura digital que sustenta sistemas e serviços. Seu escopo envolve arquitetura de nuvem, redes, automação, disponibilidade, escalabilidade, resiliência, segurança e eficiência no uso de recursos computacionais.",
-              "• **Engenharia de Cibersegurança:** A Engenharia de Cibersegurança aborda segurança como parte da própria construção dos sistemas. Em vez de atuar apenas depois que um incidente acontece, essa perspectiva considera riscos, arquitetura, identidade, proteção de dados, redes e controles desde as etapas de projeto.",
+              "### **Engenharia de Software**",
+              "A Engenharia de Software se concentra no projeto e na evolução de sistemas de software. Isso envolve desenvolvimento, mas também arquitetura, qualidade, integração, escalabilidade, manutenção e decisões sobre como aplicações devem ser estruturadas para continuar evoluindo.",
+              "### **Engenharia de Inteligência Artificial**",
+              "A Engenharia de Inteligência Artificial trabalha com o projeto e a integração de sistemas inteligentes. Além dos modelos propriamente ditos, entram questões ligadas a dados, avaliação, infraestrutura, integração com aplicações e acompanhamento das soluções em funcionamento.",
+              "### **Engenharia de Dados com IA**",
+              "A Engenharia de Dados com IA se dedica às estruturas necessárias para coletar, processar, integrar, organizar e disponibilizar dados com qualidade. Pipelines, arquiteturas de dados, processamento em escala, governança e integração fazem parte desse universo - inclusive para criar bases confiáveis para aplicações de inteligência artificial.",
+              "### **Engenharia de Cloud Computing**",
+              "A Engenharia de Cloud Computing trata da infraestrutura digital que sustenta sistemas e serviços. Seu escopo envolve arquitetura de nuvem, redes, automação, disponibilidade, escalabilidade, resiliência, segurança e eficiência no uso de recursos computacionais.",
+              "### **Engenharia de Cibersegurança**",
+              "A Engenharia de Cibersegurança aborda segurança como parte da própria construção dos sistemas. Em vez de atuar apenas depois que um incidente acontece, essa perspectiva considera riscos, arquitetura, identidade, proteção de dados, redes e controles desde as etapas de projeto.",
               "## **Por que essa forma de pensar ganhou importância?**",
               "Sistemas digitais se tornaram mais conectados e dependentes uns dos outros. Uma única aplicação pode reunir software desenvolvido internamente, serviços de terceiros, ambientes em nuvem, bancos de dados, componentes de inteligência artificial e diferentes mecanismos de segurança. Isso aumenta o número de decisões técnicas envolvidas e também as consequências de uma escolha ruim.",
               "A inteligência artificial acrescenta outra mudança. Ferramentas capazes de gerar código, automatizar configurações e auxiliar análises aceleram determinadas etapas do trabalho técnico. Isso pode reduzir o esforço necessário para algumas tarefas, mas não elimina a necessidade de decidir **o que deve ser construído, como as partes devem se conectar e se o resultado atende aos requisitos do sistema**.",
@@ -192,446 +197,111 @@
             ]
           },
           {
-            id: 2,
-            title: "2. A origem das Engenharias Tech",
-            pageRange: "Págs 7-12",
-            content: [
-              "As **Engenharias Tech** surgem de uma mudança concreta na forma como a tecnologia participa da economia e do funcionamento das organizações.",
-              "Software deixou de ser apenas uma ferramenta de apoio e passou a fazer parte do próprio produto de empresas de diferentes setores. Dados se tornaram infraestrutura para decisões e automação. A computação em nuvem permitiu operar sistemas distribuídos em grande escala. A cibersegurança passou a fazer parte da arquitetura desde o início. E a inteligência artificial ampliou tanto o que pode ser automatizado quanto a complexidade das soluções colocadas em produção.",
-              "Nesse cenário, aumentou a necessidade de profissionais capazes não apenas de executar tarefas técnicas, mas de **projetar, integrar, avaliar e evoluir sistemas**.",
-              "É dessa leitura que nasce, no Infnet, a categoria das Engenharias Tech.",
-              "## **Quando tecnologia deixou de ser apenas suporte**",
-              "Durante boa parte da história da computação empresarial, muitos sistemas digitais tinham funções relativamente delimitadas: automatizar processos internos, armazenar informações, apoiar áreas administrativas ou permitir comunicação.",
-              "Esse cenário mudou gradualmente. A internet transformou software em canal de relacionamento, produto e serviço. Aplicações passaram a atender milhares ou milhões de pessoas ao mesmo tempo. Empresas começaram a depender de sistemas disponíveis continuamente, integrados a outras plataformas e capazes de processar volumes crescentes de informação.",
-              "Com isso, decisões técnicas passaram a ter impacto direto no negócio: uma arquitetura difícil de escalar pode limitar o crescimento de um produto; uma estrutura de dados mal planejada pode comprometer análises e sistemas de IA; uma falha de segurança pode interromper operações inteiras; uma infraestrutura mal dimensionada pode aumentar custos ou reduzir disponibilidade.",
-              "A tecnologia deixou de ser apenas algo que a organização utiliza. Em muitos casos, tornou-se parte da própria estrutura que permite que ela funcione.",
-              "## **Cloud e sistemas distribuídos aumentaram a escala**",
-              "A computação em nuvem mudou profundamente a forma de construir e operar sistemas. Em vez de depender exclusivamente de servidores locais e ambientes relativamente estáticos, empresas passaram a utilizar infraestrutura distribuída, serviços sob demanda e arquiteturas capazes de crescer conforme a necessidade.",
-              "Isso trouxe flexibilidade, mas também novas decisões: Como distribuir uma aplicação? Como garantir disponibilidade quando um componente falha? Como equilibrar desempenho e custo? Como organizar redes, armazenamento e processamento? Como automatizar infraestrutura sem perder controle?",
-              "Configurar serviços continua sendo importante. Mas, em sistemas maiores, alguém precisa decidir **como esses serviços formarão uma arquitetura coerente**.",
-              "Essa é uma das mudanças que aproximaram ainda mais o trabalho tecnológico da lógica da engenharia.",
-              "## **Dados se tornaram parte da infraestrutura**",
-              "Outra transformação aconteceu com os dados. À medida que produtos e operações passaram a gerar grandes volumes de informação, armazenar dados deixou de ser suficiente. Foi necessário construir estruturas capazes de coletá-los, processá-los, integrá-los, garantir sua qualidade e disponibilizá-los para diferentes usos.",
-              "Uma empresa pode ter dados em dezenas de sistemas diferentes. Para que eles sejam utilizados em relatórios, automações ou modelos de inteligência artificial, é preciso criar fluxos confiáveis entre essas fontes.",
-              "Surgem, então, problemas de arquitetura, governança, desempenho, integração e escala. A Engenharia de Dados ganha espaço justamente nesse ponto: não apenas trabalhando com informações, mas projetando a infraestrutura necessária para que elas possam ser utilizadas de maneira consistente.",
-              "## **A inteligência artificial mudou a relação com a execução técnica**",
-              "Ferramentas atuais conseguem auxiliar na escrita de código, criação de testes, análise de dados, documentação, configuração de ambientes e diversas outras tarefas técnicas. Isso não elimina a necessidade de conhecimento técnico. Muda principalmente **onde parte do valor desse conhecimento é applied**.",
-              "Se uma ferramenta consegue gerar rapidamente uma primeira versão de código, o desafio não termina ali. Ainda é preciso saber se aquela solução é adequada à arquitetura existente, se apresenta riscos, se terá bom desempenho, como será testada e como poderá ser mantida.",
-              "O mesmo acontece com modelos de IA. Utilizar um modelo é relativamente diferente de projetar um sistema inteligente completo. Dados precisam ser preparados, resultados avaliados, serviços integrados, infraestrutura dimensionada e comportamento acompanhado depois que a solução entra em produção.",
-              "A automação reduz esforço em algumas etapas. Ao mesmo tempo, aumenta o valor de julgamento técnico, fundamentos e capacidade de tomar decisões sobre o sistema como um todo.",
-              "## **Segurança deixou de ser uma etapa final**",
-              "Quanto mais sistemas, dados e serviços se conectam, maior é a superfície que precisa ser protegida. Por isso, cibersegurança deixou de poder funcionar apenas como uma resposta depois que o sistema já foi construído.",
-              "Decisões sobre identidade, controle de acesso, redes, armazenamento, desenvolvimento e arquitetura influenciam diretamente o nível de segurança de uma solução. Isso muda a própria forma de projetar tecnologia. Em vez de perguntar somente 'como fazer funcionar?', passa a ser necessário perguntar também quem pode acessar, o que acontece quando um componente falha, quais dados estão expostos e como o sistema reage diante de comportamentos inesperados.",
-              "Segurança se torna, assim, uma dimensão estrutural da engenharia de sistemas digitais.",
-              "## **A complexidade passou a estar nas conexões**",
-              "Essas transformações não ocorreram isoladamente. Um produto de software pode depender de uma plataforma em nuvem, utilizar diferentes bancos de dados, incorporar inteligência artificial e precisar atender requisitos rigorosos de segurança.",
-              "É na interação entre essas partes que surgem muitos dos problemas mais difíceis. Uma mudança no software pode aumentar o consumo de infraestrutura. Uma decisão sobre armazenamento pode dificultar o treinamento de modelos. Uma integração pode introduzir novos riscos de segurança. Uma arquitetura mais resiliente pode custar mais.",
-              "Por isso, construir sistemas atuais envolve constantemente **decidir entre requisitos que competem entre si**. Esse aumento de complexidade ajuda a explicar por que o pensamento de engenharia ganhou espaço em áreas antes tratadas apenas como especialidades de tecnologia.",
-              "## **Da especialização técnica às Engenharias Tech**",
-              "As Engenharias Tech organizam esse cenário em cinco objetos de formação distintos:",
-              "• **Engenharia de Software:** trabalha com a construção e evolução de sistemas e arquiteturas de software.",
-              "• **Engenharia de Dados com IA:** se concentra nas estruturas que tornam dados disponíveis, confiáveis e utilizáveis em escala.",
-              "• **Engenharia de Inteligência Artificial:** aprofunda o desenvolvimento e a integração de sistemas inteligentes.",
-              "• **Engenharia de Cloud Computing:** trata da infraestrutura distribuída que sustenta aplicações e serviços.",
-              "• **Engenharia de Cibersegurança:** trabalha a segurança como parte da própria arquitetura tecnológica.",
-              "Cada formação possui profundidade própria. O que as reúne é o tipo de responsabilidade desenvolvido: compreender fundamentos, projetar estruturas, integrar componentes, avaliar restrições e tomar decisões sobre sistemas que precisam funcionar e continuar evoluindo.",
-              "## **Das engenharias tradicionais às Engenharias Tech**",
-              "As Engenharias Tech surgem como consequência natural da evolução tecnológica. Elas representam a união entre o pensamento estruturado da engenharia e a velocidade de transformação do universo digital.",
-              "Sua origem está na necessidade de formar profissionais capazes de lidar com sistemas cada vez mais complexos, integrar diferentes tecnologias e construir soluções que acompanhem as mudanças do mercado.",
-              "Mais do que uma nova nomenclatura, as Engenharias Tech representam uma nova forma de compreender o papel dos profissionais responsáveis por criar o futuro tecnológico."
-            ]
-          },
-          {
-            id: 3,
-            title: "3. Operador e Engenheiro: dois níveis de atuação em tecnologia",
-            pageRange: "Págs 13-19",
-            content: [
-              "A tecnologia transformou profundamente a forma como empresas criam produtos, organizam processos e se relacionam com seus clientes.",
-              "Sistemas digitais, inteligência artificial, computação em nuvem e dados passaram a fazer parte da estrutura estratégica de organizações dos mais diversos setores.",
-              "Nesse cenário, a diferença entre profissionais de tecnologia não está apenas nas ferramentas que conhecem ou nas linguagens que dominam. Também importa o tipo de responsabilidade que assumem: sua atuação está concentrada principalmente na execução de tarefas e processos já definidos ou inclui decisões sobre como sistemas devem ser projetados, integrados e evoluídos?",
-              "Essa diferença ajuda a compreender uma das ideias associadas às **Engenharias Tech**: a existência de diferentes níveis de atuação em tecnologia - aqui representados pelos papéis de operador e engenheiro.",
-              "Enquanto o operador concentra sua atuação na utilização, configuração e execução de atividades específicas, o engenheiro assume responsabilidades mais estruturais, relacionadas ao projeto, integração, avaliação e evolução de sistemas.",
-              "Essa distinção não separa profissionais 'mais' ou 'menos' importantes. Ela trata de diferenças de escopo, responsabilidade e profundidade de atuação dentro dos ambientes tecnológicos.",
-              "## **O que diferencia um operador de um engenheiro em tecnologia?**",
-              "A principal diferença está no escopo das decisões pelas quais cada profissional é responsável.",
-              "• **O operador** atua principalmente sobre ferramentas, processos e tarefas já determinados. Seu objetivo é executar uma atividade específica, seguir procedimentos e garantir que uma operação aconteça corretamente.",
-              "• **O engenheiro** trabalha em uma camada mais estrutural. Ele precisa compreender como diferentes componentes se conectam, quais alternativas técnicas existem e como um sistema pode ser projetado para atender requisitos de desempenho, segurança, confiabilidade e escala.",
-              "Em tecnologia, essa diferença pode aparecer em situações como:",
-              "• Um operador pode configurar um serviço de nuvem dentro de uma arquitetura já definida; um engenheiro de Cloud Computing precisa decidir qual arquitetura atende melhor aos requisitos daquele sistema.",
-              "• Um operador pode executar consultas e procedimentos em uma base de dados; um engenheiro de dados precisa projetar estruturas capazes de armazenar, processar e disponibilizar informações em escala.",
-              "• Um profissional pode utilizar uma ferramenta ou modelo de inteligência artificial; um engenheiro de IA precisa avaliar como essa tecnologia será integrada ao sistema, quais dados serão utilizados e como seus resultados serão avaliados.",
-              "A diferença está menos na ferramenta em si e mais na responsabilidade assumida sobre o sistema.",
-              "## **A execução automatizada e a mudança no trabalho em tecnologia**",
-              "O domínio de ferramentas específicas sempre teve importância na atuação profissional em tecnologia. Conhecer uma linguagem de programação, saber configurar servidores, administrar bancos de dados ou trabalhar com determinadas plataformas continua sendo valioso. O que mudou foi a quantidade de tarefas que hoje podem ser apoiadas ou parcialmente automatizadas.",
-              "Ferramentas de automação e inteligência artificial já auxiliam em atividades como geração de código, configuração de ambientes, análise de informações e documentação. Isso não torna o conhecimento técnico menos importante. Em muitos casos, desloca parte do trabalho para atividades que exigem avaliação, contexto e tomada de decisão.",
-              "Quando uma etapa de execução é automatizada, ainda pode ser necessário: definir arquiteturas, avaliar alternativas tecnológicas, integrar diferentes sistemas, identificar riscos, garantir segurança e desempenho, orientar a evolução das soluções. Esse é um dos espaços em que a atuação de engenharia ganha relevância.",
-              "## **O operador: foco na execução e no funcionamento das ferramentas**",
-              "O operador tem um papel importante no funcionamento diário da tecnologia. Sua atuação está relacionada à execução de atividades necessárias para manter sistemas, processos e ferramentas funcionando corretamente.",
-              "Entre suas responsabilidades podem estar: configurar ambientes, executar procedimentos técnicos, monitorar sistemas, realizar ajustes operacionais, aplicar soluções previamente definidas. Esse trabalho exige conhecimento das ferramentas, atenção aos processos e capacidade de identificar problemas na operação. Em muitos ambientes, é justamente essa atuação que mantém serviços disponíveis e processos funcionando de forma estável. Conforme o sistema cresce ou muda, porém, também aparecem problemas que exigem decisões sobre sua estrutura, integração e evolução.",
-              "## **O engenheiro: foco na construção e evolução dos sistemas**",
-              "O engenheiro atua justamente nesse nível mais estrutural. Seu trabalho envolve compreender problemas, projetar soluções e tomar decisões que podem afetar o funcionamento de sistemas inteiros.",
-              "Entre suas responsabilidades estão: definir arquiteturas tecnológicas, projetar soluções escaláveis, integrar diferentes plataformas, avaliar desempenho e segurança, analisar impactos de mudanças, planejar a evolução dos sistemas.",
-              "Uma decisão técnica raramente envolve apenas a necessidade imediata. Também podem entrar na análise custos, manutenção, crescimento, confiabilidade, integração e capacidade de adaptação. Essa visão sistêmica é uma das características centrais das Engenharias Tech.",
-              "## **A diferença entre executar uma solução e projetar uma solução**",
-              "Na operação, é comum trabalhar a partir de uma solução, arquitetura ou procedimento já definido. Na engenharia, parte da responsabilidade está justamente em definir essa solução.",
-              "Imagine uma empresa que precisa criar uma nova plataforma digital. A operação pode envolver configurar e manter os ambientes necessários para que a plataforma funcione. Antes disso, porém, alguém precisa responder perguntas como: Qual arquitetura será utilizada? Como os dados serão armazenados? Como o sistema será protegido? Como poderá crescer? Como diferentes tecnologias serão integradas? Quais riscos e restrições precisam ser considerados?",
-              "A execução transforma decisões em funcionamento. A engenharia participa da definição dessas decisões.",
-              "## **As Engenharias Tech e a formação de profissionais com atuação estrutural**",
-              "O conceito de **Engenharias Tech** está ligado justamente à formação de profissionais preparados para assumir esse tipo de responsabilidade. No Infnet, a categoria reúne cinco graduações Live de quatro anos: Engenharia de Software, Engenharia de Inteligência Artificial, Engenharia de Dados com IA, Engenharia de Cibersegurança e Engenharia de Cloud Computing.",
-              "Cada uma se aprofunda em um objeto diferente, mas compartilha uma proposta de formação baseada em fundamentos, arquitetura, integração, visão sistêmica e tomada de decisão.",
-              "## **Por que a visão de engenharia ganhou importância?**",
-              "Os ambientes tecnológicos se tornaram mais integrados. Aplicações podem depender simultaneamente de dados, inteligência artificial, infraestrutura em nuvem, serviços externos e mecanismos de segurança. Uma mudança em uma dessas partes pode afetar várias outras.",
-              "Nesse contexto, além de profissionais capazes de executar bem cada atividade, as organizações também precisam de pessoas preparadas para responder perguntas como: Como construir uma arquitetura preparada para crescer? Como integrar novas tecnologias sem comprometer sistemas existentes? Como equilibrar segurança, desempenho e custo? Como preparar uma solução para evoluir ao longo do tempo?",
-              "## **Operador e engenheiro: dois papéis complementares**",
-              "Operação e engenharia não são atividades concorrentes. Um sistema precisa de profissionais capazes de projetar sua estrutura e também de pessoas responsáveis por colocá-la em funcionamento, acompanhá-la e mantê-la estável.",
-              "A diferença está principalmente no escopo das responsabilidades: a operação trabalha diretamente com o funcionamento cotidiano de processos e ferramentas; a engenharia se ocupa das decisões que estruturam esses processos e definem como o sistema deve funcionar e evoluir."
-            ]
-          },
-          {
-            id: 4,
-            title: "4. Os princípios das Engenharias Tech",
-            pageRange: "Págs 20-27",
-            content: [
-              "A tecnologia se tornou uma das principais forças de transformação da sociedade e das organizações. Sistemas digitais, inteligência artificial, dados, computação em nuvem e automação passaram a fazer parte da infraestrutura essencial de empresas dos mais diversos setores.",
-              "À medida que esses ambientes se tornam mais complexos, aumenta também a necessidade de profissionais capazes de compreender seus fundamentos, projetar soluções robustas e integrar diferentes componentes tecnológicos.",
-              "É nesse contexto que se inserem as **Engenharias Tech**: uma categoria de formação baseada em princípios que vão além do domínio de ferramentas específicas.",
-              "Uma área tecnológica não se torna uma Engenharia Tech apenas porque trabalha com tecnologias avançadas. Ela precisa reunir características como profundidade técnica, domínio de fundamentos, capacidade de projetar arquiteturas, integração de sistemas complexos e visão sistêmica.",
-              "## **O que define uma Engenharia Tech?**",
-              "As Engenharias Tech são voltadas à construção e evolução das estruturas tecnológicas que sustentam sistemas e serviços digitais.",
-              "Isso exige mais do que saber utilizar uma ferramenta ou plataforma. É preciso compreender como sistemas são projetados, conectados, avaliados e aprimorados.",
-              "Os principais princípios que definem uma Engenharia Tech são: profundidade técnica; domínio de fundamentos; capacidade de projetar arquiteturas; integração entre diferentes tecnologias; atuação em sistemas complexos; visão sistêmica sobre soluções digitais.",
-              "Esses elementos formam uma base comum às cinco Engenharias Tech do Infnet: Engenharia de Software, Engenharia de Inteligência Artificial, Engenharia de Dados com IA, Engenharia de Cloud Computing e Engenharia de Cibersegurança.",
-              "## **Profundidade técnica: compreender além das ferramentas**",
-              "Em um cenário tecnológico que muda rapidamente, ferramentas e plataformas podem ser substituídas com frequência. Linguagens, frameworks, serviços em nuvem e soluções de inteligência artificial evoluem constantemente. Por isso, uma formação de engenharia precisa desenvolver também os conhecimentos que permanecem úteis mesmo quando a tecnologia utilizada muda.",
-              "A profundidade técnica envolve entender: como os sistemas funcionam internamente; quais são os limites de cada tecnologia; quais impactos podem surgir de determinadas decisões técnicas; como diferentes componentes se comportam em conjunto.",
-              "## **Fundamentos: a base para construir tecnologia**",
-              "Tecnologias mudam, mas conceitos fundamentais continuam sendo necessários para construir sistemas confiáveis. Conhecimentos como lógica computacional, estruturas de dados, arquitetura de sistemas, redes, segurança e bancos de dados dão suporte a decisões técnicas mais complexas.",
-              "Os fundamentos ajudam o profissional a compreender não apenas **como** uma solução pode ser implementada, mas **por que** determinada abordagem faz sentido em um contexto.",
-              "## **Arquitetura: projetar soluções antes de construí-las**",
-              "A arquitetura é outro elemento central das Engenharias Tech. Construir tecnologia envolve mais do que desenvolver funcionalidades isoladas. Também é necessário planejar como diferentes componentes irão funcionar juntos.",
-              "A arquitetura de um sistema considera aspectos como: desempenho, segurança, escalabilidade, manutenção, integração e disponibilidade.",
-              "## **Integração: conectar diferentes tecnologias e conhecimentos**",
-              "A tecnologia moderna é formada por diferentes camadas que precisam trabalhar em conjunto. Aplicações utilizam dados. Dados dependem de armazenamento e processamento. A infraestrutura precisa de redes e mecanismos de segurança. Sistemas inteligentes precisam combinar modelos, informações, software e recursos computacionais.",
-              "## **Sistemas complexos: lidar com múltiplas dependências e restrições**",
-              "Complexidade não significa apenas atender milhões de usuários ou processar grandes volumes de dados. Ela também pode surgir da quantidade de componentes, integrações, dependências e restrições envolvidas em uma solução.",
-              "Um sistema pode precisar equilibrar simultaneamente: desempenho, confiabilidade, segurança, custos, escalabilidade e capacidade de evolução.",
-              "## **Visão sistêmica: entender relações e impactos**",
-              "A visão sistêmica representa a capacidade de analisar uma solução considerando suas relações e consequências. Um profissional com visão sistêmica não observa apenas uma ferramenta ou componente isolado. Ele entende que uma decisão tomada em uma parte do sistema pode produzir efeitos em outras.",
-              "## **Como esses princípios aparecem nas diferentes Engenharias Tech?**",
-              "• **Engenharia de Software:** profundidade técnica, arquitetura e visão sistêmica aparecem na construção de aplicações e sistemas preparados para crescer e evoluir.",
-              "• **Engenharia de Dados com IA:** esses princípios aparecem na construção das estruturas responsáveis por coletar, armazenar, processar, integrar e disponibilizar informações.",
-              "• **Engenharia de Inteligência Artificial:** o pensamento de engenharia aparece na construção de sistemas que combinam modelos, dados, software e infraestrutura.",
-              "• **Engenharia de Cloud Computing:** os princípios aparecem no projeto de infraestruturas distribuídas, escaláveis, resilientes e seguras.",
-              "• **Engenharia de Cibersegurança:** segurança é tratada como parte da arquitetura dos sistemas.",
-              "## **Conclusão: os princípios que definem as Engenharias Tech**",
-              "As Engenharias Tech compartilham princípios que vão além do domínio de ferramentas: profundidade técnica, fundamentos sólidos, arquitetura, integração, capacidade de lidar com sistemas complexos e visão sistêmica."
-            ]
-          },
-          {
-            id: 5,
-            title: "5. Engenharia tradicional e Engenharia Tech: o que muda quando a engenharia passa a construir o mundo digital?",
-            pageRange: "Págs 28-34",
-            content: [
-              "A engenharia sempre esteve relacionada à capacidade de transformar conhecimento técnico e científico em soluções para problemas concretos. Ao longo da história, engenheiros projetaram pontes, máquinas, sistemas industriais, redes de energia e inúmeras outras estruturas essenciais à sociedade.",
-              "Com a evolução da tecnologia, esse pensamento também passou a ser aplicado de forma cada vez mais intensa ao ambiente digital.",
-              "Hoje, sistemas de software, arquiteturas de dados, ambientes computacionais, inteligência artificial e infraestruturas digitais precisam ser projetados para atender requisitos de desempenho, segurança, confiabilidade e capacidade de evolução.",
-              "É nesse contexto que se inserem as **Engenharias Tech**. Elas preservam princípios presentes nas engenharias tradicionais - planejamento, uso de fundamentos técnicos, análise de restrições e avaliação de riscos -, mas os aplicam a objetos predominantemente digitais.",
-              "## **O que a engenharia tradicional e a Engenharia Tech têm em comum?**",
-              "Apesar de atuarem sobre objetos diferentes, as engenharias tradicionais e as Engenharias Tech compartilham uma lógica fundamental: utilizar conhecimento técnico para projetar soluções capazes de atender determinados requisitos.",
-              "Alguns princípios aparecem nas duas abordagens: planejamento antes e durante a execução; uso de fundamentos técnicos e científicos; preocupação com qualidade e segurança; análise de impactos e restrições; busca por eficiência; capacidade de lidar com complexidade.",
-              "Um engenheiro civil precisa considerar materiais, cargas, condições ambientais e segurança ao projetar uma estrutura. Da mesma forma, um engenheiro de software precisa avaliar arquitetura, desempenho, disponibilidade, segurança e capacidade de evolução ao projetar um sistema crítico.",
-              "## **O que muda quando a engenharia passa a construir tecnologia?**",
-              "Passam a fazer parte do universo digital: sistemas de software; arquiteturas computacionais; plataformas digitais; sistemas de inteligência artificial; pipelines e plataformas de dados; ambientes de computação em nuvem; redes e estruturas de segurança.",
-              "No ambiente digital, uma solução raramente está realmente 'pronta'. Sistemas recebem novas funcionalidades, integram novos serviços e precisam se adaptar a mudanças de uso, infraestrutura e segurança. Projetar pensando nessa evolução faz parte do trabalho de engenharia.",
-              "## **Arquitetura: organizar um sistema antes e durante sua construção**",
-              "Em sistemas tecnológicos, arquitetura descreve como componentes são organizados, quais responsabilidades possuem e como se relacionam. Antes de desenvolver uma solução, podem ser necessárias decisões sobre componentes, comunicação, armazenamento, escalabilidade e segurança.",
-              "## **Segurança e confiabilidade: preocupações presentes nas duas áreas**",
-              "Assim como estruturas físicas operam dentro de limites seguros, sistemas digitais como plataformas financeiras ou de saúde precisam continuar disponíveis diante de falhas, restringir acessos e garantir resiliência.",
-              "## **A importância da visão sistêmica na Engenharia Tech**",
-              "Ter visão sistêmica significa compreender profundamente a própria especialidade e perceber como suas decisões se relacionam com outras partes da solução digital (nuvem, bancos de dados, APIs e redes).",
-              "## **Conclusão: o pensamento de engenharia aplicado ao mundo digital**",
-              "Fundamentos técnicos, planejamento, arquitetura de sistemas, segurança, análise de restrições e visão sistêmica continuam relevantes quando aquilo que se projeta é digital."
-            ]
-          },
-          {
-            id: 6,
-            title: "6. O papel do Engenheiro Tech: o profissional que projeta e constrói a tecnologia do futuro",
-            pageRange: "Págs 35-42",
-            content: [
-              "A tecnologia deixou de ocupar apenas funções de apoio e passou a fazer parte da estrutura de produtos, serviços e operações de empresas dos mais diversos setores.",
-              "O **Engenheiro Tech** é o profissional que atua na construção e evolução de sistemas tecnológicos dentro de uma área de especialização. Sua atuação combina profundidade técnica, pensamento de engenharia e visão sistêmica para projetar, integrar, avaliar, gerenciar e evoluir sistemas e arquiteturas.",
-              "## **O que faz um Engenheiro Tech?**",
-              "Dependendo da área, sua atuação pode envolver: projetar arquiteturas tecnológicas; integrar sistemas e serviços; avaliar soluções e tomar decisões técnicas; gerenciar ambientes tecnológicos complexos; evoluir sistemas existentes; considerar requisitos de segurança, desempenho, confiabilidade e escala.",
-              "## **Projetar, Integrar, Avaliar e Gerenciar**",
-              "• **Projetar:** Antes de implementar, é preciso compreender o problema, levantar requisitos, avaliar restrições e decidir como diferentes partes se organizam.",
-              "• **Integrar:** Conectar software, dados, infraestrutura em nuvem, mecanismos de segurança e modelos de IA de forma coordenada.",
-              "• **Avaliar trade-offs:** Analisar vantagens e limitações entre escolhas como desempenho x custo, simplicidade x escalabilidade ou velocidade x segurança.",
-              "• **Gerenciar sistemas complexos:** Acompanhar o funcionamento de ambientes com múltiplas dependências e otimizar recursos técnicos.",
-              "• **Evoluir arquiteturas:** Adaptar e melhorar soluções existentes conforme novas necessidades e tecnologias aparecem.",
-              "## **O papel do Engenheiro Tech na era da inteligência artificial**",
-              "A inteligência artificial automatiza etapas de execução técnica. Porém, cabe ao Engenheiro Tech definir objetivos, validar respostas geradas pela IA e garantir que a solução final seja viável, segura e escalável.",
-              "## **Conclusão: transformar problemas em sistemas que funcionam e evoluem**",
-              "Sua atuação combina profundidade técnica com capacidade de compreender requisitos, restrições e consequências das decisões tomadas."
-            ]
-          },
-          {
-            id: 7,
-            title: "7. Visão sistêmica nas Engenharias Tech",
-            pageRange: "Págs 43-51",
-            content: [
-              "Um sistema tecnológico raramente depende de um único componente. Uma aplicação se conecta a dados, serviços e infraestrutura.",
-              "Trabalhar com tecnologia em profundidade exige compreender como as diferentes partes de uma solução se relacionam e como decisões em um ponto produzem consequências em outros. Essa capacidade é chamada de **visão sistêmica**.",
-              "## **O que é visão sistêmica em tecnologia?**",
-              "Visão sistêmica é a capacidade de compreender uma solução tecnológica considerando as relações existentes entre seus diferentes componentes. Em vez de observar uma tarefa isoladamente, o profissional procura entender o contexto no qual ela acontece.",
-              "## **Visão sistêmica não significa saber tudo sobre tecnologia**",
-              "Um Engenheiro Tech não precisa dominar todas as cinco Engenharias Tech ao mesmo tempo. Ele desenvolve **profundidade em sua área de especialização** (ex: Engenharia de Dados) e desenvolve a **compreensão estrutural de como essa área se conecta com as demais**.",
-              "## **Da tarefa isolada à compreensão do sistema**",
-              "Em vez de apenas perguntar 'Como faço essa alteração?', a abordagem sistêmica investiga 'De quais partes esse componente depende?', 'O que depende dele?' e 'Quais riscos surgem dessa modificação para o sistema todo?'.",
-              "## **Arquitetura e Integração**",
-              "Identificar dependências, planejar pontos de integração e estruturar fluxos entre software, nuvem, segurança, IA e dados são aplicações diretas da visão sistêmica.",
-              "## **Conclusão: enxergar além do componente**",
-              "A visão sistêmica permite tomar decisões mais consistentes, projetar arquiteturas melhores e desenvolver soluções preparadas para evoluir com segurança."
-            ]
-          },
-          {
-            id: 8,
-            title: "8. IA e o novo valor do trabalho técnico: como a automação muda o papel dos profissionais de tecnologia",
-            pageRange: "Págs 52-59",
-            content: [
-              "A inteligência artificial está mudando a forma como a tecnologia é criada, utilizada e desenvolvida. Ferramentas automatizam geração de código, testes, análises de dados e documentação.",
-              "Isso não significa que o conhecimento técnico perdeu importância; significa que **cresce o valor de capacidades como compreender problemas, tomar decisões, projetar soluções e avaliar consequências**.",
-              "## **Da execução técnica para a resolução de problemas complexos**",
-              "Quando ferramentas de IA assumem tarefas de execução direta, o valor do trabalho desloca-se para: compreender o problema real, definir objetivos, escolher abordagens adequadas, avaliar resultados e projetar soluções completas.",
-              "## **Julgamento técnico: avaliar, questionar e decidir**",
-              "Uma resposta ou código gerado por IA precisa ser verificado: é seguro? Atende à arquitetura? É economicamente viável? Como será mantido em produção?",
-              "## **O novo valor do conhecimento técnico e dos fundamentos**",
-              "Dominar fundamentos (lógica, algoritmos, arquitetura, redes, banco de dados) torna-se crucial para auditar e direcionar a inteligência artificial com criterio e responsabilidade.",
-              "## **Conclusão: o valor técnico muda, mas continua essencial**",
-              "O objetivo não é competir com a IA em velocidade de execução, mas utilizá-la com conhecimento suficiente para avaliar quando ajuda, quando falha e como seus resultados devem ser incorporados a uma solução real."
-            ]
-          },
-          {
-            id: 9,
-            title: "9. Decisões de engenharia em sistemas complexos: como projetar tecnologia além do \"fazer funcionar\"",
-            pageRange: "Págs 60-70",
-            content: [
-              "Construir tecnologia envolve muito mais do que desenvolver uma solução que funcione no momento da entrega.",
-              "A visão de engenharia não busca simplesmente 'fazer funcionar'. Ela procura construir sistemas adequados aos objetivos, limitações e prioridades de cada contexto.",
-              "## **O que são decisões de engenharia?**",
-              "São escolhas técnicas feitas durante o projeto, desenvolvimento e evolução de um sistema, determinando componentes, linguagens, arquitetura, segurança e capacidade de expansão.",
-              "## **O desafio central: equilibrar requisitos que entram em conflito (Trade-offs)**",
-              "Decisões de engenharia envolvem ponderar fatores que competem entre si:",
-              "• **Desempenho x Custo:** Otimizações extremas podem elevar custos em infraestrutura ou gerar complexidade excessiva.",
-              "• **Segurança x Usabilidade:** Controles de segurança precisam proteger sem inviabilizar a operação.",
-              "• **Escalabilidade x Simplicidade:** Criar uma arquitetura para milhões de acessos desde o primeiro dia pode gerar desperdício se o produto ainda for pequeno.",
-              "• **Confiabilidade x Custo Operacional:** Nem todo sistema exige tolerância a falhas instantânea de nível bancário.",
-              "• **Complexidade x Capacidade de Evolução:** Evitar soluções desnecessariamente elaboradas para garantir facilidade de manutenção.",
-              "## **Conclusão: engenharia é decidir como construir**",
-              "É a capacidade de transformar requisitos e restrições reais em decisões técnicas coerentes que está no centro da atuação do Engenheiro Tech."
-            ]
-          },
-          {
-            id: 10,
-            title: "10. Fundamentos da computação na era da IA: por que o conhecimento essencial se torna ainda mais importante",
-            pageRange: "Págs 71-79",
-            content: [
-              "Em um cenário onde ferramentas, linguagens e plataformas mudam com rapidez, o que continua essencial? A resposta está nos **fundamentos da computação**.",
-              "## **Por que os fundamentos continuam importantes?**",
-              "Linguagens e frameworks surgem e desaparecem, mas os conceitos essenciais permanecem estáveis através das gerações tecnológicas.",
-              "## **Os pilares dos fundamentos:**",
-              "• **Lógica e Algoritmos:** estruturação de problemas, decomposição e eficiência.",
-              "• **Estruturas de Dados:** organização e manipulação adequada de informações.",
-              "• **Arquitetura de Sistemas:** compreensão de processamento, memória e componentes.",
-              "• **Redes:** comunicação, protocolos, latência, conectividade e disponibilidade.",
-              "• **Bancos de Dados:** armazenamento, consistência e recuperação de informações.",
-              "## **O risco de depender apenas de ferramentas**",
-              "Quem aprende apenas uma ferramenta específica corre o risco de obsolescência rápida. Quem domina fundamentos conquista autonomia técnica para se adaptar a novos cenários e auditar criticamente soluções sugeridas por IA.",
-              "## **Conclusão: fundamentos continuam essenciais na era da IA**",
-              "Quanto mais ferramentas auxiliam na execução, mais importante se torna o conhecimento essencial para projetar sistemas confiáveis."
-            ]
-          },
-          {
-            id: 11,
-            title: "11. O mapa das Engenharias Tech: como as áreas que constroem a tecnologia se conectam",
-            pageRange: "Págs 80-88",
-            content: [
-              "O ecossistema das Engenharias Tech organiza a construção do mundo digital em cinco grandes eixos de especialização:",
-              "• **Engenharia de Software:** organiza aplicações, regras de negócio e componentes (posição transversal de conexão).",
-              "• **Engenharia de Dados com IA:** estrutura pipelines, governança, qualidade e disponibilidade das informações.",
-              "• **Engenharia de Inteligência Artificial:** desenvolve, adapta e integra modelos inteligentes a soluções reais.",
-              "• **Engenharia de Cloud Computing:** fornece a infraestrutura distribuída, escalável e automatizada em nuvem.",
-              "• **Engenharia de Cibersegurança:** estabelece a proteção transversal de dados, redes, aplicações e identidades desde a concepção.",
-              "## **A visão integrada e a posição transversal do Software**",
-              "Essas cinco áreas não funcionam de forma isolada. Em qualquer aplicação digital moderna (como um aplicativo bancário com IA), elas se encontram e colaboram dentro de uma arquitetura integrada.",
-              "## **Conclusão: compreender o ecossistema tecnológico**",
-              "O mapa das Engenharias Tech permite enxergar o todo, incentivando a profundidade em uma especialidade combinada com a compreensão das conexões do ecossistema."
-            ]
-          },
-          {
-            id: 12,
-            title: "12. Engenharia de Software: construindo aplicações para um mundo digital conectado",
-            pageRange: "Págs 89-97",
-            content: [
-              "A Engenharia de Software aplica princípios rigorosos de engenharia ao projeto, desenvolvimento, manutenção e evolução de aplicações digitais.",
-              "## **Sistemas complexos e pilares arquiteturais:**",
-              "• **Arquitetura:** definição de microsserviços, organização de módulos e padrões de comunicação.",
-              "• **Integração:** conexão consistente via APIs, mensagens e serviços externos.",
-              "• **Escalabilidade:** capacidade de suportar crescimento de acessos e dados sem perda de desempenho.",
-              "• **Confiabilidade e Resiliência:** tratamento preventivo de falhas, testes automatizados, monitoramento e recuperação.",
-              "• **Capacidade de Evolução:** código limpo, modularidade e facilidade de manutenção ao longo do ciclo de vida.",
-              "## **Engenharia de Software e IA**",
-              "Ferramentas de IA aceleram a escrita de código, mas a decisão sobre arquitetura, segurança e integração continua exigindo responsabilidade técnica do Engenheiro de Software.",
-              "## **Conclusão: construir software é construir sistemas**",
-              "A Engenharia de Software transforma necessidades em sistemas digitais organizados, seguros e capazes de evoluir."
-            ]
-          },
-          {
-            id: 13,
-            title: "13. Engenharia de Dados com IA: construindo a infraestrutura que transforma dados em ativos confiáveis",
-            pageRange: "Págs 98-107",
-            content: [
-              "Possuir grandes volumes de dados não garante sua utilidade. A Engenharia de Dados com IA projeta a infraestrutura que coleta, organiza, processa, protege e disponibiliza dados com qualidade.",
-              "## **Componentes estruturais da Engenharia de Dados:**",
-              "• **Pipelines de Dados:** fluxos automatizados de coleta, processamento, transformação e carga (ETL/ELT).",
-              "• **Arquitetura de Dados:** Data Lakes, Data Warehouses, bancos relacionais e não-relacionais.",
-              "• **Processamento em Escala:** padronização, limpeza e tratamento de inconsistências.",
-              "• **Integração de Fontes:** conexão entre sistemas financeiros, operacionais e externos.",
-              "• **Qualidade e Governança:** precisão, rastreabilidade, LGPD, controle de acesso e catálogos de dados.",
-              "• **Suporte à IA:** criação de bases confiáveis para alimentar e atualizar modelos de Machine Learning.",
-              "## **Conclusão: dados confiáveis dependem de uma boa infraestrutura**",
-              "A Engenharia de Dados com IA garante que a informação chegue ao lugar certo, na hora certa e com a qualidade necessária para orientar decisões e automações."
-            ]
-          },
-          {
-            id: 14,
-            title: "14. Engenharia de Inteligência Artificial: construindo sistemas inteligentes além do uso de modelos",
-            pageRange: "Págs 108-117",
-            content: [
-              "Existe uma grande diferença entre simplesmente chamar a API de um modelo pronto e projetar um sistema de Inteligência Artificial completo em produção.",
-              "## **Desafios e etapas da Engenharia de IA:**",
-              "• **Compreensão do Problema:** avaliar se a IA é a solução adequada ou se abordagens tradicionais resolvem melhor.",
-              "• **Preparação e Governança de Dados:** garantir conjuntos de dados de qualidade para treino, fine-tuning e RAG.",
-              "• **Seleção e Ajuste de Modelos:** escolher ou adaptar modelos ponderando qualidade, latência e custo computacional.",
-              "• **Integração:** conectar o modelo inteligente a aplicações, bancos de dados e fluxos de trabalho reais.",
-              "• **Avaliação e Monitoramento:** medir desempenho contínuo, tratar alucinações e acompanhar custos em operação.",
-              "• **Supervisão Humana e Julgamento Técnico:** estabelecer pontos de controle para garantir segurança e alinhamento ético.",
-              "## **Conclusão: construir inteligência artificial é construir sistemas**",
-              "A Engenharia de IA transforma modelos matemáticos em soluções tecnológicas robustas e utilizáveis."
-            ]
-          },
-          {
             id: 15,
-            title: "15. Engenharia de Cloud Computing: construindo a infraestrutura digital para sistemas escaláveis e resilientes",
-            pageRange: "Págs 118-128",
+            title: "15. Engenharia de Software: Muito além do código",
+            pageRange: "Págs 100-108",
             content: [
-              "A computação em nuvem tornou a infraestrutura dinâmica, flexível e programável. A Engenharia de Cloud Computing projeta, automatiza e evolui esses ambientes computacionais.",
-              "## **Eixos de atuação na nuvem:**",
-              "• **Arquitetura de Nuvem:** definição de recursos de processamento, armazenamento, redes e bancos de dados.",
-              "• **Escalabilidade:** dimensionamento automático para responder a aumentos de demanda.",
-              "• **Resiliência e Tolerância a Falhas:** redundância, distribuição de cargas e estratégias de recuperação de desastres.",
-              "• **Segurança em Cloud:** controle de acesso, identidades, criptografia e segmentação de redes.",
-              "• **FinOps e Eficiência de Custos:** equilíbrio preciso entre alto desempenho e controle financeiro.",
-              "• **Infraestrutura como Código (IaC):** automação e padronização do provisionamento de recursos.",
-              "## **Conclusão: construir a infraestrutura onde sistemas funcionam**",
-              "A Engenharia de Cloud Computing fornece a base sólida e escalável para sustentar o ecossistema digital."
+              "**A Engenharia de Software não se limita a escrever código. Ela lida com a complexidade de manter aplicações rodando, crescendo e evoluindo ao longo do tempo.**",
+              "Enquanto um programador pode focar em fazer uma funcionalidade rodar, o Engenheiro de Software projeta como essa funcionalidade se comportará quando o sistema tiver milhares ou milhões de usuários.",
+              "## **Os Pilares da Engenharia de Software**",
+              "Para garantir que um sistema não apenas funcione, mas sobreviva ao tempo e à escala, a engenharia de software baseia-se em:",
+              "• **Arquitetura de Sistemas:** Definição de padrões (como microsserviços, event-driven) que permitem ao sistema crescer.",
+              "• **Qualidade e Testes Automatizados:** Garantia de que novas mudanças não quebrem funcionalidades existentes.",
+              "• **Integração e Entrega Contínuas (CI/CD):** Automação do fluxo que leva o código da máquina do desenvolvedor para a produção com segurança.",
+              "• **Manutenibilidade:** Escrita de código limpo, documentado e estruturado de forma que outros engenheiros possam evoluí-lo no futuro."
             ]
           },
           {
             id: 16,
-            title: "16. Engenharia de Cibersegurança: construindo sistemas seguros desde a arquitetura",
-            pageRange: "Págs 129-139",
+            title: "16. Engenharia de IA: Projetando sistemas inteligentes",
+            pageRange: "Págs 109-115",
             content: [
-              "A cibersegurança não pode ser um adendo instalado apenas depois que o sistema está pronto. Ela precisa ser incorporada *Security by Design*.",
-              "## **Pilares da Engenharia de Cibersegurança:**",
-              "• **Arquitetura Segura:** redução da superfície de ataque, segmentação e controle de fronteiras.",
-              "• **Gestão de Identidades e Acesso (IAM):** autenticação rigorosa e princípio do menor privilégio.",
-              "• **Proteção de Dados:** criptografia em trânsito e em repouso ao longo de todo o ciclo de vida.",
-              "• **Análise de Riscos e Vulnerabilidades:** identificação preventiva de falhas antes que sejam exploradas.",
-              "• **Resiliência e Resposta a Incidentes:** monitoramento contínuo, detecção e mitigação de ameaças.",
-              "## **Conclusão: segurança é parte da construção**",
-              "A Engenharia de Cibersegurança analisa o sistema como um todo para projetar proteções alinhadas ao contexto e aos riscos reais."
+              "**Criar um modelo de Inteligência Artificial em um laboratório é um desafio de ciência de dados. Fazer com que ele funcione em um produto real é um desafio de Engenharia de IA.**",
+              "A Engenharia de Inteligência Artificial atua na ponte entre a experimentação estatística e o software em produção. Um modelo isolado não gera valor até que seja integrado a uma aplicação que os usuários possam acessar.",
+              "## **O Desafio de Produzir IA**",
+              "Colocar IA no mundo real envolve resolver problemas estruturais:",
+              "• **Integração de Modelos:** Como a aplicação web ou mobile vai se comunicar com o modelo sem causar lentidão?",
+              "• **MLOps (Machine Learning Operations):** Como automatizar o treinamento e a implantação de novas versões do modelo?",
+              "• **Monitoramento de Performance e Drift:** Modelos degradam com o tempo. Como saber quando os dados do mundo real mudaram e o modelo precisa ser retreinado?",
+              "• **Restrições de Custo e Latência:** Um modelo perfeito que demora 10 segundos para responder pode ser inútil em um aplicativo de respostas em tempo real.",
+              "A Engenharia de IA resolve a lacuna entre 'funciona no meu notebook' e 'funciona para milhões de usuários'."
             ]
           },
           {
             id: 17,
-            title: "17. Integração de sistemas",
-            pageRange: "Págs 140-150",
+            title: "17. Engenharia de Dados com IA: A infraestrutura do conhecimento",
+            pageRange: "Págs 116-125",
             content: [
-              "Sistemas modernos são formados por múltiplos componentes especialistas que precisam trocar informações com estabilidade, segurança e eficiência.",
-              "## **Desafios e boas práticas de integração:**",
-              "• **APIs e Contratos:** definição de interfaces claras, versionamento e segurança na comunicação.",
-              "• **Integração de Dados:** preservação do significado, validação de formatos e sincronização.",
-              "• **Baixo Acoplamento:** garantir que alterações em um serviço não exijam reescrita de outros componentes.",
-              "• **Confiabilidade e Resiliência:** isolamento de falhas, retentativas controladas e monitoramento.",
-              "• **Segurança:** autenticação, autorização e controle estrito sobre o fluxo de dados.",
-              "## **Conclusão: integrar é projetar relações entre tecnologias**",
-              "A integração de sistemas garante que partes heterogêneas colaborem de maneira harmoniosa para formar uma solução completa."
+              "**Sem dados consistentes, acessíveis e organizados, a Inteligência Artificial não tem utilidade. A Engenharia de Dados é a fundação que torna tudo isso possível.**",
+              "O Engenheiro de Dados projeta e constrói as vias expressas pelas quais a informação transita. Ele coleta dados brutos de dezenas de sistemas, transforma essas informações e as armazena de forma que analistas e sistemas de IA possam consumi-las rapidamente.",
+              "## **Construindo a Infraestrutura do Conhecimento**",
+              "As principais responsabilidades envolvem:",
+              "• **Pipelines de Dados:** Fluxos automatizados que movem a informação do ponto A ao ponto B.",
+              "• **Processamento em Batch e Streaming:** Lidar com dados históricos em grandes lotes ou reagir a eventos em tempo real (como transações de cartão de crédito).",
+              "• **Arquitetura de Data Lakes e Data Warehouses:** Decidir como e onde armazenar petabytes de informação de maneira eficiente e econômica.",
+              "• **Qualidade e Governança:** Garantir que os dados não estejam duplicados, corrompidos ou enviesados antes de chegarem aos algoritmos."
             ]
           },
           {
             id: 18,
-            title: "18. A formação em Engenharias Tech",
-            pageRange: "Págs 151-160",
+            title: "18. Engenharia de Cloud Computing: A espinha dorsal da tecnologia",
+            pageRange: "Págs 126-135",
             content: [
-              "Formar profissionais preparados para o futuro da tecnologia exige ir além do ensino de ferramentas passageiras.",
-              "## **Pilares de uma formação sólida:**",
-              "• **Fundamentos Sólidos:** matemática, lógica, algoritmos, redes, bancos de dados e arquitetura.",
-              "• **Prática Aplicada e Projetos:** construção de sistemas reais, testes e resolução de problemas.",
-              "• **Pensamento Arquitetural:** capacidade de planejar a estrutura antes e durante a implementação.",
-              "• **Capacidade de Integração:** conexão de componentes de software, dados, nuvem, IA e segurança.",
-              "• **Resolução de Problemas Complexos:** tomada de decisões ponderando requisitos e restrições reais.",
-              "• **Visão Sistêmica:** compreensão do impacto de escolhas locais no ecossistema completo.",
-              "## **Conclusão: formar profissionais capazes de construir e evoluir tecnologia**",
-              "A formação desenvolve autonomia e julgamento técnico para que o profissional acompanhe as transformações do mercado ao longo da carreira."
+              "**A nuvem democratizou o acesso a supercomputadores, mas orquestrar essa infraestrutura distribuída requer engenharia avançada.**",
+              "A Engenharia de Cloud Computing trata da construção e manutenção dos ambientes onde os sistemas vivem. Não se trata apenas de 'alugar servidores', mas de arquitetar soluções altamente resilientes.",
+              "## **Pilares da Engenharia de Nuvem**",
+              "Um sistema em nuvem bem projetado é aquele que continua funcionando mesmo quando partes da infraestrutura falham:",
+              "• **Alta Disponibilidade e Tolerância a Falhas:** Desenhar o ambiente para que, se um data center cair, o sistema migre automaticamente para outro.",
+              "• **Infraestrutura como Código (IaC):** Escrever scripts para provisionar servidores e redes em segundos, em vez de configurá-los manualmente.",
+              "• **Escalabilidade Elástica:** Fazer o sistema crescer automaticamente na Black Friday e diminuir no dia seguinte para poupar dinheiro.",
+              "• **FinOps (Otimização de Custos):** A nuvem pode ser infinita, mas o orçamento da empresa não é. O engenheiro deve equilibrar performance e custo."
             ]
           },
           {
             id: 19,
-            title: "19. As competências do Engenheiro Tech: as capacidades que definem quem constrói tecnologia",
-            pageRange: "Págs 161-170",
+            title: "19. Engenharia de Cibersegurança: Proteção estrutural",
+            pageRange: "Págs 136-144",
             content: [
-              "O Engenheiro Tech é definido pelo conjunto de competências estruturais que aplica na resolução de problemas tecnológicos:",
-              "1. **Profundidade Técnica:** compreensão dos fundamentos além da superfície das ferramentas.",
-              "2. **Capacidade de Abstração:** identificação de padrões e modelos mentais em cenários complexos.",
-              "3. **Pensamento Crítico:** avaliação criteriosa de alternativas, custos, riscos e benefícios.",
-              "4. **Pensamento Arquitetural:** habilidade de organizar componentes e fluxos de forma sustentável.",
-              "5. **Capacidade de Integração:** conectar sistemas heterogêneos com confiabilidade e segurança.",
-              "6. **Visão Sistêmica:** enxergar o todo e compreender as dependências entre as partes.",
-              "7. **Tomada de Decisão Técnica:** escolha de caminhos justificáveis e gestão consciente de trade-offs.",
-              "## **Conclusão: competências que permanecem além das ferramentas**",
-              "Essas capacidades garantem uma carreira sólida, duradoura e independente das oscilações de mercado."
+              "**A segurança não pode ser um remendo adicionado no final do projeto. Ela deve nascer com a arquitetura do sistema.**",
+              "O Engenheiro de Cibersegurança pensa como um atacante para construir sistemas capazes de se defender. Em um mundo de aplicações conectadas, o perímetro de segurança desapareceu.",
+              "## **Proteção como Arquitetura**",
+              "A abordagem moderna de cibersegurança envolve:",
+              "• **DevSecOps:** Integrar testes de segurança e validações de vulnerabilidades diretamente no fluxo de desenvolvimento do software.",
+              "• **Arquitetura Zero Trust (Confiança Zero):** O princípio de que nenhum usuário ou sistema deve ser confiado por padrão, não importa se está dentro ou fora da rede corporativa.",
+              "• **Gestão de Identidades e Acessos:** Garantir que apenas as pessoas e sistemas corretos tenham o privilégio mínimo necessário.",
+              "• **Modelagem de Ameaças:** Antecipar cenários de ataque antes mesmo de escrever a primeira linha de código."
             ]
           },
           {
             id: 20,
-            title: "20. Como escolher uma Engenharia Tech: entendendo caminhos, perfis e possibilidades de atuação",
-            pageRange: "Págs 171-180",
+            title: "20. O Modelo Live do Infnet",
+            pageRange: "Págs 145-150",
             content: [
-              "A escolha da sua graduação deve partir do **tipo de problema que você mais gosta de aprender a resolver**:",
-              "• **Engenharia de Software:** se seu foco é criar produtos, aplicações e arquiteturas de software.",
-              "• **Engenharia de Dados com IA:** se você gosta de organizar, processar e estruturar fluxos de informação.",
-              "• **Engenharia de Inteligência Artificial:** se seu objetivo é desenvolver e integrar modelos e sistemas inteligentes.",
-              "• **Engenharia de Cloud Computing:** se você prefere infraestrutura, automação, redes e sistemas distribuídos.",
-              "• **Engenharia de Cibersegurança:** se seu interesse é investigar riscos, proteger ativos e projetar defesas.",
-              "## **Conclusão: escolher uma Engenharia Tech é escolher onde aprofundar**",
-              "Todas as cinco áreas compartilham fundamentos de engenharia, permitindo especialização profunda com mobilidade dentro do ecossistema tecnológico."
+              "**As Engenharias Tech exigem uma metodologia de ensino tão dinâmica quanto o mercado que as originou.**",
+              "É por isso que o Infnet adota o modelo Live, uma abordagem que une a flexibilidade do ambiente digital com o rigor e a interação da sala de aula.",
+              "## **O Modelo Live na Prática**",
+              "A formação em Engenharia Tech não se faz apenas assistindo vídeos gravados. Ela exige debate, validação de ideias e resolução de problemas estruturais.",
+              "• **Aulas Síncronas ao Vivo:** Os encontros ocorrem em tempo real. O professor não é um palestrante em um vídeo, é um engenheiro sênior orientando a turma.",
+              "• **Aprendizado Baseado em Projetos (PBL):** A cada bloco de disciplinas, o estudante resolve problemas reais, construindo portfólio.",
+              "• **Professores do Mercado:** Profissionais que lidam diariamente com os desafios que estão ensinando.",
+              "• **Networking Ativo:** Troca de experiências contínua com colegas e instrutores de todo o Brasil."
             ]
           },
           {
             id: 21,
-            title: "21. Carreiras em Engenharias Tech: onde atuam os profissionais que constroem a tecnologia",
-            pageRange: "Págs 181-191",
+            title: "21. O seu próximo passo nas Engenharias Tech",
+            pageRange: "Págs 151-155",
             content: [
-              "As Engenharias Tech abrem portas para atuar em setores estratégicos globalmente: bancos, fintechs, streaming, saúde, varejo digital, indústrias e empresas de tecnologia.",
-              "## **Trajetória e Evolução de Carreira:**",
-              "Ao longo do tempo, o profissional evolui para papéis de alta responsabilidade técnica e estratégica:",
-              "• **Especialista Técnico Sênior**",
-              "• **Líder Técnico (Tech Lead)**",
-              "• **Arquiteto de Soluções e Sistemas**",
-              "• **Engenheiro de Plataforma**",
-              "• **Responsável por Decisões Arquiteturais e Inovação**",
-              "## **Conclusão: diferentes carreiras, diferentes problemas de engenharia**",
-              "Com o avanço da IA e da automação, a capacidade de projetar, integrar, proteger e evoluir sistemas complexos torna-se o diferencial mais valorizado do mercado."
+              "**O mundo digital precisa de profissionais capazes de projetar, e não apenas de operar. Esse é o momento para escolher o seu caminho nas Engenharias Tech.**",
+              "À medida que as inteligências artificiais se tornam assistentes poderosos para a geração de código e configuração de ferramentas, o diferencial humano se desloca para a visão sistêmica e a tomada de decisão.",
+              "## **Como escolher a sua Engenharia?**",
+              "Sua escolha deve se basear nos problemas que você quer resolver:",
+              "• **Engenharia de Software:** Se você quer criar as aplicações e plataformas digitais do futuro.",
+              "• **Engenharia de IA:** Se você deseja integrar modelos de inteligência aos produtos que mudam o mundo.",
+              "• **Engenharia de Dados com IA:** Se você se fascina por arquitetar os caminhos da informação em altíssima escala.",
+              "• **Engenharia de Cloud Computing:** Se você quer projetar as espinhas dorsais que sustentam tudo na internet.",
+              "• **Engenharia de Cibersegurança:** Se sua missão é defender e construir ecossistemas digitais blindados.",
+              "A tecnologia dos próximos anos não será apenas 'usada'. Ela precisa ser cuidadosamente arquitetada. Bem-vindo à era do Engenheiro Tech."
             ]
           }
         ];
@@ -857,7 +527,11 @@
             return resultHTML;
         }
 
-        function renderParagraphHTML(paragraph) {
+        function renderParagraphHTML(paragraph, isFirst) {
+            if (isFirst && paragraph.startsWith('## ')) {
+                return ''; 
+            }
+
             if (paragraph.startsWith('## ')) {
                 return `<h3 class="text-xl md:text-2xl font-black mt-8 mb-4 p-3 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-800 dark:text-sky-300 border-l-4 border-sky-500 shadow-sm flex items-center tracking-tight">
                     ${renderFormattedText(paragraph.replace('## ', ''), state.searchQuery, true)}
@@ -901,7 +575,7 @@
                         </h1>
                         
                         <p class="text-base sm:text-lg md:text-xl text-white font-medium leading-relaxed max-w-xl">
-                            Construindo o Futuro da Tecnologia: O guia definitivo para entender e liderar as Engenharias Tech.
+                            Construindo o Futuro da Tecnologia: O guia definitivo para entender, projetar e liderar as Engenharias Tech.
                         </p>
 
                         <div class="pt-6">
@@ -949,8 +623,8 @@
             };
 
             let paragraphsHTML = '';
-            article.content.forEach((paragraph) => {
-                paragraphsHTML += renderParagraphHTML(paragraph);
+            article.content.forEach((paragraph, pIdx) => {
+                paragraphsHTML += renderParagraphHTML(paragraph, pIdx === 0);
             });
 
             const articleHTML = `
@@ -969,7 +643,7 @@
                 </div>
 
                 <div class="p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-current opacity-60 text-xs font-bold mt-10">
-                    <button onclick="setChapter(${state.currentChapterIndex - 1})" class="w-full sm:w-auto px-4 py-2 border rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-center transition-all flex items-center justify-center space-x-2">
+                    <button onclick="setChapter(${state.currentChapterIndex - 1})" class="w-full sm:w-auto px-4 py-2 border rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-center transition-all flex items-center justify-center space-x-2 ${state.currentChapterIndex === 0 ? 'opacity-30 pointer-events-none' : ''}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
@@ -987,11 +661,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </button>
-                    ` : `
-                        <button onclick="setChapter(-1)" class="w-full sm:w-auto px-4 py-2 bg-[#23599c] text-white rounded-lg text-center transition-all">
-                            Voltar ao Início
-                        </button>
-                    `}
+                    ` : '<div></div>'}
                 </div>
             </article>
             `;
@@ -999,99 +669,140 @@
             container.innerHTML = articleHTML;
         }
 
+        function handleSearch(query) {
+            state.searchQuery = query.trim();
+            renderSearchPanel();
+            if (state.currentChapterIndex !== -1) {
+                renderContent();
+            }
+        }
+
+        function renderSearchPanel() {
+            const query = state.searchQuery.toLowerCase();
+            const resultsContent = document.getElementById('search-results-content');
+            const resultsInfo = document.getElementById('search-results-info');
+            if (!resultsContent) return;
+
+            if (!query) {
+                if (resultsInfo) resultsInfo.classList.add('hidden');
+                resultsContent.innerHTML = `<p class="text-xs text-center opacity-60 py-6">Digite um termo para pesquisar em todo o e-book...</p>`;
+                return;
+            }
+
+            let matches = [];
+            ebookData.forEach((chapter, chapterIndex) => {
+                chapter.content.forEach((paragraph, pIndex) => {
+                    if (paragraph.toLowerCase().includes(query)) {
+                        matches.push({ chapter, chapterIndex, paragraph, pIndex });
+                    }
+                });
+            });
+
+            if (resultsInfo) {
+                resultsInfo.innerText = `${matches.length} trecho(s) encontrado(s)`;
+                resultsInfo.classList.remove('hidden');
+            }
+
+            if (matches.length === 0) {
+                resultsContent.innerHTML = `<p class="text-xs text-center opacity-60 py-6">Nenhum resultado encontrado para "${state.searchQuery}".</p>`;
+                return;
+            }
+
+            let html = '';
+            matches.slice(0, 30).forEach(match => {
+                const cleanParagraph = match.paragraph.replace(/^[#\-•\d\.]+\s*/, '');
+                html += `
+                    <div onclick="setChapter(${match.chapterIndex}); closePanels();" class="p-3 border rounded-lg hover:bg-sky-50 dark:hover:bg-sky-950/40 cursor-pointer transition-all border-slate-200 dark:border-slate-700">
+                        <div class="text-[10px] font-bold text-[#23599c] dark:text-[#689ccb] uppercase tracking-wider mb-1">
+                            Capítulo ${match.chapterIndex + 1}
+                        </div>
+                        <div class="text-xs font-bold mb-1 truncate">
+                            ${match.chapter.title}
+                        </div>
+                        <div class="text-[11px] opacity-80 line-clamp-3">
+                            ${highlightText(cleanParagraph, state.searchQuery)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            resultsContent.innerHTML = html;
+        }
+
         function renderBookmarksPanel() {
             const container = document.getElementById('bookmarks-panel-content');
             if (!container) return;
 
-            let tabHTML = '';
             if (state.bookmarks.length === 0) {
-                tabHTML += `
-                <p class="text-xs text-center opacity-60 py-8">
-                    Nenhum capítulo favoritado ainda. Clique no ícone de fita enquanto lê para salvar aqui!
-                </p>
-                `;
-            } else {
-                state.bookmarks.forEach(bId => {
-                    const chapterIndex = ebookData.findIndex(c => c.id === bId);
-                    const chapter = ebookData[chapterIndex];
-                    if (chapter) {
-                        tabHTML += `
-                        <button onclick="setChapter(${chapterIndex}); toggleTabPanel('bookmarks');" class="w-full text-left p-3 rounded-lg border border-current opacity-85 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-xs flex justify-between items-center transition-all">
-                            <div class="truncate pr-2">
-                                <div class="font-semibold">${chapter.title}</div>
-                                <div class="text-[10px] opacity-60">${chapter.pageRange}</div>
-                            </div>
-                            <svg class="w-4 h-4 text-[#23599c] dark:text-[#689ccb] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-                            </svg>
-                        </button>
-                        `;
-                    }
-                });
+                container.innerHTML = `<p class="text-xs text-center opacity-60 py-6">Nenhum capítulo favoritado ainda.</p>`;
+                return;
             }
 
-            container.innerHTML = tabHTML;
-        }
-
-        function renderSearchPanel() {
-            const resultsContent = document.getElementById('search-results-content');
-            const resultsInfo = document.getElementById('search-results-info');
-            if (!resultsContent || !resultsInfo) return;
-
-            const results = [];
-            if (state.searchQuery.trim()) {
-                ebookData.forEach(chapter => {
-                    chapter.content.forEach((paragraph, pIdx) => {
-                        if (paragraph.toLowerCase().includes(state.searchQuery.toLowerCase())) {
-                            results.push({
-                                chapterId: chapter.id,
-                                chapterTitle: chapter.title,
-                                paragraph: paragraph,
-                                index: pIdx
-                            });
-                        }
-                    });
-                });
-            }
-
-            if (state.searchQuery) {
-                resultsInfo.classList.remove('hidden');
-                resultsInfo.innerText = `${results.length} trechos encontrados`;
-            } else {
-                resultsInfo.classList.add('hidden');
-            }
-
-            let resultsHTML = '';
-            results.forEach(res => {
-                const matchedChapterIdx = ebookData.findIndex(c => c.id === res.chapterId);
-                resultsHTML += `
-                <button onclick="setChapter(${matchedChapterIdx}); toggleTabPanel('search');" class="w-full text-left p-2.5 rounded-lg border border-[#23599c]/20 hover:bg-[#23599c]/5 text-xs space-y-1 block transition-all">
-                    <div class="font-bold text-[#23599c] dark:text-[#689ccb] truncate">${res.chapterTitle}</div>
-                    <p class="line-clamp-3 opacity-80 italic">"...${highlightText(res.paragraph, state.searchQuery)}..."</p>
-                </button>
-                `;
+            let html = '';
+            state.bookmarks.forEach(id => {
+                const chapterIdx = ebookData.findIndex(c => c.id === id);
+                if (chapterIdx !== -1) {
+                    const chapter = ebookData[chapterIdx];
+                    html += `
+                        <div class="p-3 border rounded-lg flex items-center justify-between hover:bg-sky-50 dark:hover:bg-sky-950/40 transition-all border-slate-200 dark:border-slate-700">
+                            <button onclick="setChapter(${chapterIdx}); closePanels();" class="text-left flex-1 pr-2">
+                                <div class="text-[10px] font-bold text-[#23599c] dark:text-[#689ccb] uppercase">Capítulo ${chapterIdx + 1}</div>
+                                <div class="text-xs font-bold truncate">${chapter.title}</div>
+                            </button>
+                            <button onclick="toggleBookmarkById(${id})" class="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-all" title="Remover dos favoritos">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                }
             });
 
-            if (state.searchQuery && results.length === 0) {
-                resultsHTML += `<p class="text-xs text-center opacity-60 py-4">Nenhum resultado para "${state.searchQuery}".</p>`;
-            } else if (!state.searchQuery) {
-                resultsHTML += `<p class="text-xs text-center opacity-60 py-4">Digite termos acima para pesquisar em todo o e-book...</p>`;
+            container.innerHTML = html;
+        }
+
+        function toggleBookmarkById(id) {
+            const idx = state.bookmarks.indexOf(id);
+            if (idx !== -1) {
+                state.bookmarks.splice(idx, 1);
+                saveBookmarks();
+                updateHeaderBookmarkIcon();
+                renderBookmarksPanel();
             }
-
-            resultsContent.innerHTML = resultsHTML;
         }
 
-        function handleSearch(val) {
-            state.searchQuery = val;
-            renderSearchPanel();
-            renderContent();
-        }
+        // Fechar painéis ao clicar fora
+        document.addEventListener('click', (e) => {
+            const searchPanel = document.getElementById('search-panel');
+            const bookmarksPanel = document.getElementById('bookmarks-panel');
+            const btnSearch = document.getElementById('tab-btn-search');
+            const btnBookmarks = document.getElementById('tab-btn-bookmarks');
 
-        window.onload = function() {
+            if (state.activePanel) {
+                const clickedInsideSearch = searchPanel && searchPanel.contains(e.target);
+                const clickedInsideBookmarks = bookmarksPanel && bookmarksPanel.contains(e.target);
+                const clickedBtnSearch = btnSearch && btnSearch.contains(e.target);
+                const clickedBtnBookmarks = btnBookmarks && btnBookmarks.contains(e.target);
+
+                if (!clickedInsideSearch && !clickedInsideBookmarks && !clickedBtnSearch && !clickedBtnBookmarks) {
+                    closePanels();
+                }
+            }
+        });
+
+        // Fechar painéis com a tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePanels();
+            }
+        });
+
+        // Inicialização da aplicação
+        window.addEventListener('DOMContentLoaded', () => {
             loadBookmarks();
-            setTheme('light');
             setChapter(-1);
-        };
+        });
     </script>
 </body>
 </html>
